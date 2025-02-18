@@ -57,6 +57,34 @@ func (r *CartRepo) CreateCartItem(item *model.CartItem) error {
 	return r.db.Create(itemDO).Error
 }
 
+// EmptyCart 清空购物车
+func (r *CartRepo) EmptyCart(userID int64) error {
+	// 使用软删除清空购物车商品
+	if err := r.db.Where("user_id = ?", userID).Delete(&CartItemDO{}).Error; err != nil {
+		return err
+	}
+
+	// 更新购物车状态为已清空
+	return r.db.Model(&CartDO{}).
+		Where("user_id = ? AND status = ?", userID, model.CartStatusNormal).
+		Update("status", model.CartStatusEmpty).Error
+}
+
+// GetCartItems 获取用户购物车所有商品
+func (r *CartRepo) GetCartItems(userID int64) ([]*model.CartItem, error) {
+	var itemDOs []CartItemDO
+	err := r.db.Where("user_id = ?", userID).Find(&itemDOs).Error
+	if err != nil {
+		return nil, err
+	}
+
+	items := make([]*model.CartItem, len(itemDOs))
+	for i, itemDO := range itemDOs {
+		items[i] = itemDO.ToModel()
+	}
+	return items, nil
+}
+
 // Transaction 事务处理
 func (r *CartRepo) Transaction(fn func(txRepo *CartRepo) error) error {
 	return r.db.Transaction(func(tx *gorm.DB) error {

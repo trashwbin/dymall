@@ -27,6 +27,16 @@ func (m *MockProductClient) GetProduct(ctx context.Context, req *product.GetProd
 			},
 		}, nil
 	}
+	if req.Id == 1002 {
+		return &product.GetProductResp{
+			Product: &product.Product{
+				Id:          1002,
+				Name:        "测试商品2",
+				Description: "这是一个测试商品2",
+				Price:       199.9,
+			},
+		}, nil
+	}
 	return &product.GetProductResp{}, nil
 }
 
@@ -60,6 +70,17 @@ func TestAddItem_Run(t *testing.T) {
 				Item: &cart.CartItem{
 					ProductId: 1001,
 					Quantity:  2,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "正常添加商品2",
+			req: &cart.AddItemReq{
+				UserId: 1001,
+				Item: &cart.CartItem{
+					ProductId: 1002,
+					Quantity:  3,
 				},
 			},
 			wantErr: false,
@@ -118,6 +139,7 @@ func TestAddItem_Run(t *testing.T) {
 	var cartItems []mysql.CartItemDO
 	err := mysql.DB.Where("user_id = ?", 1001).Find(&cartItems).Error
 	assert.NoError(t, err)
-	assert.Len(t, cartItems, 1)
+	assert.Len(t, cartItems, 2)
 	assert.Equal(t, int32(5), cartItems[0].Quantity) // 2 + 3
+	assert.Equal(t, int32(3), cartItems[1].Quantity) // 3
 }
