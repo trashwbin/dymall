@@ -14,12 +14,18 @@ import (
 )
 
 type AddItemService struct {
-	ctx context.Context
+	ctx       context.Context
+	cartRepo  *mysql.CartRepo
+	cacheRepo *redis.CartRepo
 }
 
 // NewAddItemService new AddItemService
 func NewAddItemService(ctx context.Context) *AddItemService {
-	return &AddItemService{ctx: ctx}
+	return &AddItemService{
+		ctx:       ctx,
+		cartRepo:  mysql.NewCartRepo(),
+		cacheRepo: redis.NewCartRepo(),
+	}
 }
 
 // Run 添加商品到购物车
@@ -35,49 +41,62 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 		return nil, utils.NewBizError(40004, "商品不存在")
 	}
 
-	// 2. 检查购物车是否存在，不存在则创建
-	var cartDO mysql.CartDO
-	result := mysql.DB.Where("user_id = ? AND status = ?", req.UserId, model.CartStatusNormal).First(&cartDO)
-	if result.Error != nil {
-		// 创建新购物车
-		cartDO = mysql.CartDO{
-			UserID: int64(req.UserId),
-			Status: int(model.CartStatusNormal),
+	// 使用事务处理购物车操作
+	err = s.cartRepo.Transaction(func(txRepo *mysql.CartRepo) error {
+		// 2. 检查购物车是否存在，不存在则创建
+		cart, err := txRepo.GetCartByUserID(int64(req.UserId), model.CartStatusNormal)
+		if err != nil {
+			klog.CtxInfof(s.ctx, "用户购物车不存在，创建新购物车 - userId: %d", req.UserId)
+			// 创建新购物车
+			cart = &model.Cart{
+				UserID: int64(req.UserId),
+				Status: model.CartStatusNormal,
+			}
+			cart, err = txRepo.CreateCart(cart)
+			if err != nil {
+				return utils.NewBizError(50001, "创建购物车失败")
+			}
+			klog.CtxInfof(s.ctx, "创建购物车成功 - userId: %d, cartId: %d", req.UserId, cart.ID)
 		}
-		if err := mysql.DB.Create(&cartDO).Error; err != nil {
-			return nil, utils.NewBizError(50001, "创建购物车失败")
-		}
-	}
 
-	// 3. 检查商品是否已在购物车中
-	var cartItemDO mysql.CartItemDO
-	result = mysql.DB.Where("cart_id = ? AND product_id = ?", cartDO.ID, req.Item.ProductId).First(&cartItemDO)
-	if result.Error == nil {
-		// 更新数量
-		cartItemDO.Quantity += req.Item.Quantity
-		if err := mysql.DB.Save(&cartItemDO).Error; err != nil {
-			return nil, utils.NewBizError(50002, "更新购物车商品失败")
+		// 3. 检查商品是否已在购物车中
+		cartItem, err := txRepo.GetCartItem(cart.ID, int64(req.Item.ProductId))
+		if err == nil {
+			// 更新数量
+			oldQuantity := cartItem.Quantity
+			cartItem.Quantity += req.Item.Quantity
+			if err := txRepo.UpdateCartItem(cartItem); err != nil {
+				return utils.NewBizError(50002, "更新购物车商品失败")
+			}
+			klog.CtxInfof(s.ctx, "更新购物车商品数量 - userId: %d, cartId: %d, productId: %d, oldQuantity: %d, newQuantity: %d",
+				req.UserId, cart.ID, req.Item.ProductId, oldQuantity, cartItem.Quantity)
+		} else {
+			// 添加新商品
+			cartItem = &model.CartItem{
+				CartID:    cart.ID,
+				UserID:    int64(req.UserId),
+				ProductID: int64(req.Item.ProductId),
+				Quantity:  req.Item.Quantity,
+			}
+			if err := txRepo.CreateCartItem(cartItem); err != nil {
+				return utils.NewBizError(50003, "添加购物车商品失败")
+			}
+			klog.CtxInfof(s.ctx, "添加新商品到购物车 - userId: %d, cartId: %d, productId: %d, quantity: %d",
+				req.UserId, cart.ID, req.Item.ProductId, cartItem.Quantity)
 		}
-	} else {
-		// 添加新商品
-		cartItemDO = mysql.CartItemDO{
-			CartID:    cartDO.ID,
-			UserID:    int64(req.UserId),
-			ProductID: int64(req.Item.ProductId),
-			Quantity:  req.Item.Quantity,
-		}
-		if err := mysql.DB.Create(&cartItemDO).Error; err != nil {
-			return nil, utils.NewBizError(50003, "添加购物车商品失败")
-		}
-	}
 
-	// 4. 更新缓存
-	cartItem := cartItemDO.ToModel()
-	cartRepo := redis.NewCartRepo()
-	if err := cartRepo.SetCartItem(s.ctx, cartItem); err != nil {
-		// 缓存错误不影响主流程
-		klog.CtxWarnf(s.ctx, "更新购物车商品缓存失败 - userId: %d, cartId: %d, productId: %d, err: %v",
-			req.UserId, cartDO.ID, req.Item.ProductId, err)
+		// 4. 更新缓存
+		if err := s.cacheRepo.SetCartItem(s.ctx, cartItem); err != nil {
+			// 缓存错误不影响主流程
+			klog.CtxWarnf(s.ctx, "更新购物车商品缓存失败 - userId: %d, cartId: %d, productId: %d, err: %v",
+				req.UserId, cart.ID, req.Item.ProductId, err)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
 	}
 
 	return &cart.AddItemResp{}, nil
