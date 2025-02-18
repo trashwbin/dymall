@@ -18,6 +18,7 @@ const (
 
 // CartCache Redis购物车缓存数据对象
 type CartCache struct {
+	ID        int64     `json:"id"`
 	UserID    int64     `json:"user_id"`
 	Status    int       `json:"status"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -36,6 +37,7 @@ type CartItemCache struct {
 // ToModel 转换为领域模型
 func (c *CartCache) ToModel() *model.Cart {
 	return &model.Cart{
+		ID:        c.ID,
 		UserID:    c.UserID,
 		Status:    model.CartStatus(c.Status),
 		UpdatedAt: c.UpdatedAt,
@@ -44,9 +46,15 @@ func (c *CartCache) ToModel() *model.Cart {
 
 // FromModel 从领域模型转换
 func (c *CartCache) FromModel(m *model.Cart) {
+	c.ID = m.ID
 	c.UserID = m.UserID
 	c.Status = int(m.Status)
 	c.UpdatedAt = m.UpdatedAt
+}
+
+// GetKey 获取购物车缓存key
+func (c *CartCache) GetKey() string {
+	return fmt.Sprintf("%s%d", CartKeyPrefix, c.UserID)
 }
 
 // ToModel 转换为领域模型
@@ -72,12 +80,12 @@ func (ci *CartItemCache) FromModel(m *model.CartItem) error {
 	return nil
 }
 
-// GetCartKey 获取购物车缓存key
-func GetCartKey(userID int64) string {
-	return fmt.Sprintf("%s%d", CartKeyPrefix, userID)
+// GetKey 获取购物车商品缓存key
+func (ci *CartItemCache) GetKey() string {
+	return fmt.Sprintf("%s%d:%d", CartItemKeyPrefix, ci.CartID, ci.ProductID)
 }
 
-// GetCartItemKey 获取购物车商品缓存key
-func GetCartItemKey(cartID int64, productID int64) string {
-	return fmt.Sprintf("%s%d:%d", CartItemKeyPrefix, cartID, productID)
+// GetCartItemPattern 获取购物车所有商品的key模式
+func GetCartItemPattern(cartID int64) string {
+	return fmt.Sprintf("%s%d:*", CartItemKeyPrefix, cartID)
 }

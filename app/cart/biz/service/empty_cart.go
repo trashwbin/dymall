@@ -34,15 +34,9 @@ func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp
 		return nil, utils.NewBizError(40001, "购物车不存在")
 	}
 
-	// 2. 获取购物车商品列表（用于后续清理缓存）
-	items, err := s.cartRepo.GetCartItems(int64(req.UserId))
-	if err != nil {
-		klog.CtxWarnf(s.ctx, "获取购物车商品列表失败 - userId: %d, err: %v", req.UserId, err)
-	}
-
-	// 3. 使用事务清空购物车
+	// 2. 使用事务清空购物车
 	err = s.cartRepo.Transaction(func(txRepo *mysql.CartRepo) error {
-		if err := txRepo.EmptyCart(int64(req.UserId)); err != nil {
+		if err := txRepo.EmptyCart(userCart.ID); err != nil {
 			return utils.NewBizError(50004, "清空购物车失败")
 		}
 		return nil
@@ -52,13 +46,10 @@ func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp
 		return nil, err
 	}
 
-	// 4. 清理缓存
-	// 注意：即使缓存清理失败也不影响主流程
-	for _, item := range items {
-		if err := s.cacheRepo.DeleteCartItem(s.ctx, userCart.ID, item.ProductID); err != nil {
-			klog.CtxWarnf(s.ctx, "清理购物车商品缓存失败 - userId: %d, cartId: %d, productId: %d, err: %v",
-				req.UserId, userCart.ID, item.ProductID, err)
-		}
+	// 3. 清理缓存
+	if err := s.cacheRepo.EmptyCart(s.ctx, userCart.ID); err != nil {
+		klog.CtxWarnf(s.ctx, "清理购物车缓存失败 - userId: %d, cartId: %d, err: %v",
+			req.UserId, userCart.ID, err)
 	}
 
 	klog.CtxInfof(s.ctx, "清空购物车成功 - userId: %d, cartId: %d", req.UserId, userCart.ID)

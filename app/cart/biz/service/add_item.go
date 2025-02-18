@@ -56,6 +56,11 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 			if err != nil {
 				return utils.NewBizError(50001, "创建购物车失败")
 			}
+			// 更新缓存
+			if err := s.cacheRepo.SetCart(s.ctx, cart); err != nil {
+				klog.CtxWarnf(s.ctx, "更新购物车缓存失败 - userId: %d, cartId: %d, err: %v",
+					req.UserId, cart.ID, err)
+			}
 			klog.CtxInfof(s.ctx, "创建购物车成功 - userId: %d, cartId: %d", req.UserId, cart.ID)
 		}
 
@@ -68,6 +73,11 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 			if err := txRepo.UpdateCartItem(cartItem); err != nil {
 				return utils.NewBizError(50002, "更新购物车商品失败")
 			}
+			// 更新缓存
+			if err := s.cacheRepo.SetCartItem(s.ctx, cartItem); err != nil {
+				klog.CtxWarnf(s.ctx, "更新购物车商品缓存失败 - cartId: %d, productId: %d, err: %v",
+					cart.ID, cartItem.ProductID, err)
+			}
 			klog.CtxInfof(s.ctx, "更新购物车商品数量 - userId: %d, cartId: %d, productId: %d, oldQuantity: %d, newQuantity: %d",
 				req.UserId, cart.ID, req.Item.ProductId, oldQuantity, cartItem.Quantity)
 		} else {
@@ -78,18 +88,18 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 				ProductID: int64(req.Item.ProductId),
 				Quantity:  req.Item.Quantity,
 			}
-			if err := txRepo.CreateCartItem(cartItem); err != nil {
+			var err error
+			cartItem, err = txRepo.CreateCartItem(cartItem)
+			if err != nil {
 				return utils.NewBizError(50003, "添加购物车商品失败")
+			}
+			// 更新缓存
+			if err := s.cacheRepo.SetCartItem(s.ctx, cartItem); err != nil {
+				klog.CtxWarnf(s.ctx, "更新购物车商品缓存失败 - cartId: %d, productId: %d, err: %v",
+					cart.ID, cartItem.ProductID, err)
 			}
 			klog.CtxInfof(s.ctx, "添加新商品到购物车 - userId: %d, cartId: %d, productId: %d, quantity: %d",
 				req.UserId, cart.ID, req.Item.ProductId, cartItem.Quantity)
-		}
-
-		// 4. 更新缓存
-		if err := s.cacheRepo.SetCartItem(s.ctx, cartItem); err != nil {
-			// 缓存错误不影响主流程
-			klog.CtxWarnf(s.ctx, "更新购物车商品缓存失败 - userId: %d, cartId: %d, productId: %d, err: %v",
-				req.UserId, cart.ID, req.Item.ProductId, err)
 		}
 
 		return nil
