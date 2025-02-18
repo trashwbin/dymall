@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	cart "github.com/trashwbin/dymall/rpc_gen/kitex_gen/cart"
 )
 
@@ -15,6 +16,6 @@ func NewAddItemService(ctx context.Context) *AddItemService {
 // Run create note info
 func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err error) {
 	// Finish your business logic.
-
-	return
+	fmt.Println("AddItemService")
+	return &cart.AddItemResp{}, nil
 }
