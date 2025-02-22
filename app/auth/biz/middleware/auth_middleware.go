@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"strings"
 
 	"github.com/cloudwego/kitex/pkg/endpoint"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -12,12 +11,24 @@ import (
 	"github.com/trashwbin/dymall/app/auth/biz/utils"
 )
 
+// 自定义上下文键类型
+type contextKey string
+
+const (
+	userIDKey   contextKey = "user_id"
+	usernameKey contextKey = "username"
+	roleKey     contextKey = "role"
+)
+
 // 白名单路径
 var whiteList = map[string]bool{
 	"DeliverTokenByRPC": true,
 	"VerifyTokenByRPC":  true,
 	"Register":          true,
 	"Login":             true,
+	"AddRoleForUser":    true, // 允许用户服务直接分配角色
+	"GetRolesForUser":   true, // 允许查询用户角色
+	"RemoveRoleForUser": true, // 允许移除用户角色
 }
 
 // AuthMiddleware 认证中间件
@@ -56,24 +67,18 @@ func AuthMiddleware(authSvc *service.AuthorizationService) endpoint.Middleware {
 				return err
 			}
 
-			// 检查权限
-			service := strings.Split(method, ".")[0]
-			action := strings.Split(method, ".")[1]
-			allowed, err := authSvc.CheckPermission(claims.Role, service, action)
-			if err != nil {
-				klog.Errorf("权限检查失败: %v", err)
-				return err
-			}
-
-			if !allowed {
-				klog.Errorf("权限不足: %s 无权访问 %s", claims.Role, method)
-				return nil
+			// 只有管理员可以管理权限策略
+			if method == "AddPolicy" || method == "RemovePolicy" {
+				if claims.Role != "admin" {
+					klog.Errorf("权限不足: 只有管理员可以管理权限策略")
+					return nil
+				}
 			}
 
 			// 将用户信息添加到上下文
-			ctx = context.WithValue(ctx, "user_id", claims.UserID)
-			ctx = context.WithValue(ctx, "username", claims.Username)
-			ctx = context.WithValue(ctx, "role", claims.Role)
+			ctx = context.WithValue(ctx, userIDKey, claims.UserID)
+			ctx = context.WithValue(ctx, usernameKey, claims.Username)
+			ctx = context.WithValue(ctx, roleKey, claims.Role)
 
 			return next(ctx, req, resp)
 		}
