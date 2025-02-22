@@ -29,6 +29,41 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"AddPolicy": kitex.NewMethodInfo(
+		addPolicyHandler,
+		newAddPolicyArgs,
+		newAddPolicyResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+	"RemovePolicy": kitex.NewMethodInfo(
+		removePolicyHandler,
+		newRemovePolicyArgs,
+		newRemovePolicyResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+	"AddRoleForUser": kitex.NewMethodInfo(
+		addRoleForUserHandler,
+		newAddRoleForUserArgs,
+		newAddRoleForUserResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+	"RemoveRoleForUser": kitex.NewMethodInfo(
+		removeRoleForUserHandler,
+		newRemoveRoleForUserArgs,
+		newRemoveRoleForUserResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
+	"GetRolesForUser": kitex.NewMethodInfo(
+		getRolesForUserHandler,
+		newGetRolesForUserArgs,
+		newGetRolesForUserResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -401,6 +436,771 @@ func (p *VerifyTokenByRPCResult) GetResult() interface{} {
 	return p.Success
 }
 
+func addPolicyHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(auth.PolicyReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(auth.AuthService).AddPolicy(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *AddPolicyArgs:
+		success, err := handler.(auth.AuthService).AddPolicy(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*AddPolicyResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newAddPolicyArgs() interface{} {
+	return &AddPolicyArgs{}
+}
+
+func newAddPolicyResult() interface{} {
+	return &AddPolicyResult{}
+}
+
+type AddPolicyArgs struct {
+	Req *auth.PolicyReq
+}
+
+func (p *AddPolicyArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(auth.PolicyReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *AddPolicyArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *AddPolicyArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *AddPolicyArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *AddPolicyArgs) Unmarshal(in []byte) error {
+	msg := new(auth.PolicyReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var AddPolicyArgs_Req_DEFAULT *auth.PolicyReq
+
+func (p *AddPolicyArgs) GetReq() *auth.PolicyReq {
+	if !p.IsSetReq() {
+		return AddPolicyArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *AddPolicyArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *AddPolicyArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type AddPolicyResult struct {
+	Success *auth.PolicyResp
+}
+
+var AddPolicyResult_Success_DEFAULT *auth.PolicyResp
+
+func (p *AddPolicyResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(auth.PolicyResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *AddPolicyResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *AddPolicyResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *AddPolicyResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *AddPolicyResult) Unmarshal(in []byte) error {
+	msg := new(auth.PolicyResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *AddPolicyResult) GetSuccess() *auth.PolicyResp {
+	if !p.IsSetSuccess() {
+		return AddPolicyResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *AddPolicyResult) SetSuccess(x interface{}) {
+	p.Success = x.(*auth.PolicyResp)
+}
+
+func (p *AddPolicyResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *AddPolicyResult) GetResult() interface{} {
+	return p.Success
+}
+
+func removePolicyHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(auth.PolicyReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(auth.AuthService).RemovePolicy(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *RemovePolicyArgs:
+		success, err := handler.(auth.AuthService).RemovePolicy(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*RemovePolicyResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newRemovePolicyArgs() interface{} {
+	return &RemovePolicyArgs{}
+}
+
+func newRemovePolicyResult() interface{} {
+	return &RemovePolicyResult{}
+}
+
+type RemovePolicyArgs struct {
+	Req *auth.PolicyReq
+}
+
+func (p *RemovePolicyArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(auth.PolicyReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *RemovePolicyArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *RemovePolicyArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *RemovePolicyArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *RemovePolicyArgs) Unmarshal(in []byte) error {
+	msg := new(auth.PolicyReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var RemovePolicyArgs_Req_DEFAULT *auth.PolicyReq
+
+func (p *RemovePolicyArgs) GetReq() *auth.PolicyReq {
+	if !p.IsSetReq() {
+		return RemovePolicyArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *RemovePolicyArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *RemovePolicyArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type RemovePolicyResult struct {
+	Success *auth.PolicyResp
+}
+
+var RemovePolicyResult_Success_DEFAULT *auth.PolicyResp
+
+func (p *RemovePolicyResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(auth.PolicyResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *RemovePolicyResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *RemovePolicyResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *RemovePolicyResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *RemovePolicyResult) Unmarshal(in []byte) error {
+	msg := new(auth.PolicyResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *RemovePolicyResult) GetSuccess() *auth.PolicyResp {
+	if !p.IsSetSuccess() {
+		return RemovePolicyResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *RemovePolicyResult) SetSuccess(x interface{}) {
+	p.Success = x.(*auth.PolicyResp)
+}
+
+func (p *RemovePolicyResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *RemovePolicyResult) GetResult() interface{} {
+	return p.Success
+}
+
+func addRoleForUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(auth.RoleBindingReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(auth.AuthService).AddRoleForUser(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *AddRoleForUserArgs:
+		success, err := handler.(auth.AuthService).AddRoleForUser(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*AddRoleForUserResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newAddRoleForUserArgs() interface{} {
+	return &AddRoleForUserArgs{}
+}
+
+func newAddRoleForUserResult() interface{} {
+	return &AddRoleForUserResult{}
+}
+
+type AddRoleForUserArgs struct {
+	Req *auth.RoleBindingReq
+}
+
+func (p *AddRoleForUserArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(auth.RoleBindingReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *AddRoleForUserArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *AddRoleForUserArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *AddRoleForUserArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *AddRoleForUserArgs) Unmarshal(in []byte) error {
+	msg := new(auth.RoleBindingReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var AddRoleForUserArgs_Req_DEFAULT *auth.RoleBindingReq
+
+func (p *AddRoleForUserArgs) GetReq() *auth.RoleBindingReq {
+	if !p.IsSetReq() {
+		return AddRoleForUserArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *AddRoleForUserArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *AddRoleForUserArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type AddRoleForUserResult struct {
+	Success *auth.PolicyResp
+}
+
+var AddRoleForUserResult_Success_DEFAULT *auth.PolicyResp
+
+func (p *AddRoleForUserResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(auth.PolicyResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *AddRoleForUserResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *AddRoleForUserResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *AddRoleForUserResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *AddRoleForUserResult) Unmarshal(in []byte) error {
+	msg := new(auth.PolicyResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *AddRoleForUserResult) GetSuccess() *auth.PolicyResp {
+	if !p.IsSetSuccess() {
+		return AddRoleForUserResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *AddRoleForUserResult) SetSuccess(x interface{}) {
+	p.Success = x.(*auth.PolicyResp)
+}
+
+func (p *AddRoleForUserResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *AddRoleForUserResult) GetResult() interface{} {
+	return p.Success
+}
+
+func removeRoleForUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(auth.RoleBindingReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(auth.AuthService).RemoveRoleForUser(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *RemoveRoleForUserArgs:
+		success, err := handler.(auth.AuthService).RemoveRoleForUser(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*RemoveRoleForUserResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newRemoveRoleForUserArgs() interface{} {
+	return &RemoveRoleForUserArgs{}
+}
+
+func newRemoveRoleForUserResult() interface{} {
+	return &RemoveRoleForUserResult{}
+}
+
+type RemoveRoleForUserArgs struct {
+	Req *auth.RoleBindingReq
+}
+
+func (p *RemoveRoleForUserArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(auth.RoleBindingReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *RemoveRoleForUserArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *RemoveRoleForUserArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *RemoveRoleForUserArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *RemoveRoleForUserArgs) Unmarshal(in []byte) error {
+	msg := new(auth.RoleBindingReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var RemoveRoleForUserArgs_Req_DEFAULT *auth.RoleBindingReq
+
+func (p *RemoveRoleForUserArgs) GetReq() *auth.RoleBindingReq {
+	if !p.IsSetReq() {
+		return RemoveRoleForUserArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *RemoveRoleForUserArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *RemoveRoleForUserArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type RemoveRoleForUserResult struct {
+	Success *auth.PolicyResp
+}
+
+var RemoveRoleForUserResult_Success_DEFAULT *auth.PolicyResp
+
+func (p *RemoveRoleForUserResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(auth.PolicyResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *RemoveRoleForUserResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *RemoveRoleForUserResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *RemoveRoleForUserResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *RemoveRoleForUserResult) Unmarshal(in []byte) error {
+	msg := new(auth.PolicyResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *RemoveRoleForUserResult) GetSuccess() *auth.PolicyResp {
+	if !p.IsSetSuccess() {
+		return RemoveRoleForUserResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *RemoveRoleForUserResult) SetSuccess(x interface{}) {
+	p.Success = x.(*auth.PolicyResp)
+}
+
+func (p *RemoveRoleForUserResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *RemoveRoleForUserResult) GetResult() interface{} {
+	return p.Success
+}
+
+func getRolesForUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(auth.RoleQueryReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(auth.AuthService).GetRolesForUser(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *GetRolesForUserArgs:
+		success, err := handler.(auth.AuthService).GetRolesForUser(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetRolesForUserResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newGetRolesForUserArgs() interface{} {
+	return &GetRolesForUserArgs{}
+}
+
+func newGetRolesForUserResult() interface{} {
+	return &GetRolesForUserResult{}
+}
+
+type GetRolesForUserArgs struct {
+	Req *auth.RoleQueryReq
+}
+
+func (p *GetRolesForUserArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(auth.RoleQueryReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetRolesForUserArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetRolesForUserArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetRolesForUserArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetRolesForUserArgs) Unmarshal(in []byte) error {
+	msg := new(auth.RoleQueryReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetRolesForUserArgs_Req_DEFAULT *auth.RoleQueryReq
+
+func (p *GetRolesForUserArgs) GetReq() *auth.RoleQueryReq {
+	if !p.IsSetReq() {
+		return GetRolesForUserArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetRolesForUserArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *GetRolesForUserArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type GetRolesForUserResult struct {
+	Success *auth.RoleQueryResp
+}
+
+var GetRolesForUserResult_Success_DEFAULT *auth.RoleQueryResp
+
+func (p *GetRolesForUserResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(auth.RoleQueryResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetRolesForUserResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetRolesForUserResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetRolesForUserResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetRolesForUserResult) Unmarshal(in []byte) error {
+	msg := new(auth.RoleQueryResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetRolesForUserResult) GetSuccess() *auth.RoleQueryResp {
+	if !p.IsSetSuccess() {
+		return GetRolesForUserResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetRolesForUserResult) SetSuccess(x interface{}) {
+	p.Success = x.(*auth.RoleQueryResp)
+}
+
+func (p *GetRolesForUserResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *GetRolesForUserResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -426,6 +1226,56 @@ func (p *kClient) VerifyTokenByRPC(ctx context.Context, Req *auth.VerifyTokenReq
 	_args.Req = Req
 	var _result VerifyTokenByRPCResult
 	if err = p.c.Call(ctx, "VerifyTokenByRPC", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) AddPolicy(ctx context.Context, Req *auth.PolicyReq) (r *auth.PolicyResp, err error) {
+	var _args AddPolicyArgs
+	_args.Req = Req
+	var _result AddPolicyResult
+	if err = p.c.Call(ctx, "AddPolicy", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) RemovePolicy(ctx context.Context, Req *auth.PolicyReq) (r *auth.PolicyResp, err error) {
+	var _args RemovePolicyArgs
+	_args.Req = Req
+	var _result RemovePolicyResult
+	if err = p.c.Call(ctx, "RemovePolicy", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) AddRoleForUser(ctx context.Context, Req *auth.RoleBindingReq) (r *auth.PolicyResp, err error) {
+	var _args AddRoleForUserArgs
+	_args.Req = Req
+	var _result AddRoleForUserResult
+	if err = p.c.Call(ctx, "AddRoleForUser", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) RemoveRoleForUser(ctx context.Context, Req *auth.RoleBindingReq) (r *auth.PolicyResp, err error) {
+	var _args RemoveRoleForUserArgs
+	_args.Req = Req
+	var _result RemoveRoleForUserResult
+	if err = p.c.Call(ctx, "RemoveRoleForUser", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetRolesForUser(ctx context.Context, Req *auth.RoleQueryReq) (r *auth.RoleQueryResp, err error) {
+	var _args GetRolesForUserArgs
+	_args.Req = Req
+	var _result GetRolesForUserResult
+	if err = p.c.Call(ctx, "GetRolesForUser", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

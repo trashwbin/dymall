@@ -4,13 +4,33 @@ package auth;
 
 option go_package = "/auth";
 
-service AuthService {
-    rpc DeliverTokenByRPC(DeliverTokenReq) returns (DeliveryResp) {}
-    rpc VerifyTokenByRPC(VerifyTokenReq) returns (VerifyResp) {}
+// 错误码枚举
+enum ErrorCode {
+    Success = 0;
+    GenerateTokenError = 1;
+    TokenExpired = 2;
+    TokenInvalid = 3;
+    PermissionDenied = 4;
 }
 
+service AuthService {
+    // 令牌相关
+    rpc DeliverTokenByRPC(DeliverTokenReq) returns (DeliveryResp) {}
+    rpc VerifyTokenByRPC(VerifyTokenReq) returns (VerifyResp) {}
+    
+    // 权限相关
+    rpc AddPolicy(PolicyReq) returns (PolicyResp) {}
+    rpc RemovePolicy(PolicyReq) returns (PolicyResp) {}
+    rpc AddRoleForUser(RoleBindingReq) returns (PolicyResp) {}
+    rpc RemoveRoleForUser(RoleBindingReq) returns (PolicyResp) {}
+    rpc GetRolesForUser(RoleQueryReq) returns (RoleQueryResp) {}
+}
+
+// 令牌相关消息
 message DeliverTokenReq {
-    int32 user_id = 1;
+    int64 user_id = 1;
+    string username = 2;
+    string role = 3;
 }
 
 message VerifyTokenReq {
@@ -18,9 +38,44 @@ message VerifyTokenReq {
 }
 
 message DeliveryResp {
-    string token = 1;
+    ErrorCode code = 1;
+    string message = 2;
+    string token = 3;
 }
 
 message VerifyResp {
-    bool res = 1;
+    ErrorCode code = 1;
+    string message = 2;
+    bool is_valid = 3;
+    int64 user_id = 4;
+    string username = 5;
+    string role = 6;
+}
+
+// 权限相关消息
+message PolicyReq {
+    string role = 1;      // 角色
+    string resource = 2;  // 资源
+    string action = 3;    // 操作
+}
+
+message PolicyResp {
+    ErrorCode code = 1;
+    string message = 2;
+    bool success = 3;
+}
+
+message RoleBindingReq {
+    int64 user_id = 1;
+    string role = 2;
+}
+
+message RoleQueryReq {
+    int64 user_id = 1;
+}
+
+message RoleQueryResp {
+    ErrorCode code = 1;
+    string message = 2;
+    repeated string roles = 3;
 }
