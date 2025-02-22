@@ -23,6 +23,7 @@ type Config struct {
 	MySQL    MySQL    `yaml:"mysql"`
 	Redis    Redis    `yaml:"redis"`
 	Registry Registry `yaml:"registry"`
+	Casbin   Casbin   `yaml:"casbin"`
 }
 
 type MySQL struct {
@@ -50,6 +51,11 @@ type Registry struct {
 	RegistryAddress []string `yaml:"registry_address"`
 	Username        string   `yaml:"username"`
 	Password        string   `yaml:"password"`
+}
+
+type Casbin struct {
+	ModelPath string `yaml:"model_path"`
+	TableName string `yaml:"table_name"`
 }
 
 // GetConf gets configuration instance
