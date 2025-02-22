@@ -24,3 +24,48 @@ func VerifyTokenByRPC(ctx context.Context, req *auth.VerifyTokenReq, callOptions
 	}
 	return resp, nil
 }
+
+func AddPolicy(ctx context.Context, req *auth.PolicyReq, callOptions ...callopt.Option) (resp *auth.PolicyResp, err error) {
+	resp, err = defaultClient.AddPolicy(ctx, req, callOptions...)
+	if err != nil {
+		klog.CtxErrorf(ctx, "AddPolicy call failed,err =%+v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func RemovePolicy(ctx context.Context, req *auth.PolicyReq, callOptions ...callopt.Option) (resp *auth.PolicyResp, err error) {
+	resp, err = defaultClient.RemovePolicy(ctx, req, callOptions...)
+	if err != nil {
+		klog.CtxErrorf(ctx, "RemovePolicy call failed,err =%+v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func AddRoleForUser(ctx context.Context, req *auth.RoleBindingReq, callOptions ...callopt.Option) (resp *auth.PolicyResp, err error) {
+	resp, err = defaultClient.AddRoleForUser(ctx, req, callOptions...)
+	if err != nil {
+		klog.CtxErrorf(ctx, "AddRoleForUser call failed,err =%+v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func RemoveRoleForUser(ctx context.Context, req *auth.RoleBindingReq, callOptions ...callopt.Option) (resp *auth.PolicyResp, err error) {
+	resp, err = defaultClient.RemoveRoleForUser(ctx, req, callOptions...)
+	if err != nil {
+		klog.CtxErrorf(ctx, "RemoveRoleForUser call failed,err =%+v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func GetRolesForUser(ctx context.Context, req *auth.RoleQueryReq, callOptions ...callopt.Option) (resp *auth.RoleQueryResp, err error) {
+	resp, err = defaultClient.GetRolesForUser(ctx, req, callOptions...)
+	if err != nil {
+		klog.CtxErrorf(ctx, "GetRolesForUser call failed,err =%+v", err)
+		return nil, err
+	}
+	return resp, nil
+}

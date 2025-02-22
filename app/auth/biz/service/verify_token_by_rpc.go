@@ -2,19 +2,66 @@ package service
 
 import (
 	"context"
+
+	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/trashwbin/dymall/app/auth/biz/utils"
 	auth "github.com/trashwbin/dymall/rpc_gen/kitex_gen/auth"
 )
 
 type VerifyTokenByRPCService struct {
-	ctx context.Context
-} // NewVerifyTokenByRPCService new VerifyTokenByRPCService
-func NewVerifyTokenByRPCService(ctx context.Context) *VerifyTokenByRPCService {
-	return &VerifyTokenByRPCService{ctx: ctx}
+	ctx     context.Context
+	authSvc *AuthorizationService
 }
 
-// Run create note info
-func (s *VerifyTokenByRPCService) Run(req *auth.VerifyTokenReq) (resp *auth.VerifyResp, err error) {
-	// Finish your business logic.
+// NewVerifyTokenByRPCService new VerifyTokenByRPCService
+func NewVerifyTokenByRPCService(ctx context.Context, authSvc *AuthorizationService) *VerifyTokenByRPCService {
+	return &VerifyTokenByRPCService{
+		ctx:     ctx,
+		authSvc: authSvc,
+	}
+}
 
-	return
+// Run 验证令牌
+func (s *VerifyTokenByRPCService) Run(req *auth.VerifyTokenReq) (resp *auth.VerifyResp, err error) {
+	resp = new(auth.VerifyResp)
+
+	// 参数校验
+	if req.Token == "" {
+		klog.Error("令牌为空")
+		resp.Code = auth.ErrorCode_TokenInvalid
+		resp.Message = "令牌不能为空"
+		resp.IsValid = false
+		return resp, nil
+	}
+
+	// 解析并验证令牌
+	claims, err := utils.ParseToken(req.Token)
+	if err != nil {
+		var code auth.ErrorCode
+		switch err {
+		case utils.ErrTokenExpired:
+			code = auth.ErrorCode_TokenExpired
+		case utils.ErrTokenNotValidYet, utils.ErrTokenMalformed, utils.ErrTokenInvalid:
+			code = auth.ErrorCode_TokenInvalid
+		default:
+			code = auth.ErrorCode_TokenInvalid
+		}
+
+		klog.Errorf("验证令牌失败: %v", err)
+		resp.Code = code
+		resp.Message = err.Error()
+		resp.IsValid = false
+		return resp, nil
+	}
+
+	// 令牌有效，返回用户信息
+	resp.Code = auth.ErrorCode_Success
+	resp.Message = "令牌验证成功"
+	resp.IsValid = true
+	resp.UserId = claims.UserID
+	resp.Username = claims.Username
+	resp.Role = claims.Role
+
+	klog.Infof("成功验证用户[%s]的令牌, role=%s", claims.Username, claims.Role)
+	return resp, nil
 }

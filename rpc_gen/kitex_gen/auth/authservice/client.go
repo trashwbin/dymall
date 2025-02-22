@@ -13,6 +13,11 @@ import (
 type Client interface {
 	DeliverTokenByRPC(ctx context.Context, Req *auth.DeliverTokenReq, callOptions ...callopt.Option) (r *auth.DeliveryResp, err error)
 	VerifyTokenByRPC(ctx context.Context, Req *auth.VerifyTokenReq, callOptions ...callopt.Option) (r *auth.VerifyResp, err error)
+	AddPolicy(ctx context.Context, Req *auth.PolicyReq, callOptions ...callopt.Option) (r *auth.PolicyResp, err error)
+	RemovePolicy(ctx context.Context, Req *auth.PolicyReq, callOptions ...callopt.Option) (r *auth.PolicyResp, err error)
+	AddRoleForUser(ctx context.Context, Req *auth.RoleBindingReq, callOptions ...callopt.Option) (r *auth.PolicyResp, err error)
+	RemoveRoleForUser(ctx context.Context, Req *auth.RoleBindingReq, callOptions ...callopt.Option) (r *auth.PolicyResp, err error)
+	GetRolesForUser(ctx context.Context, Req *auth.RoleQueryReq, callOptions ...callopt.Option) (r *auth.RoleQueryResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +57,29 @@ func (p *kAuthServiceClient) DeliverTokenByRPC(ctx context.Context, Req *auth.De
 func (p *kAuthServiceClient) VerifyTokenByRPC(ctx context.Context, Req *auth.VerifyTokenReq, callOptions ...callopt.Option) (r *auth.VerifyResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.VerifyTokenByRPC(ctx, Req)
+}
+
+func (p *kAuthServiceClient) AddPolicy(ctx context.Context, Req *auth.PolicyReq, callOptions ...callopt.Option) (r *auth.PolicyResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.AddPolicy(ctx, Req)
+}
+
+func (p *kAuthServiceClient) RemovePolicy(ctx context.Context, Req *auth.PolicyReq, callOptions ...callopt.Option) (r *auth.PolicyResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.RemovePolicy(ctx, Req)
+}
+
+func (p *kAuthServiceClient) AddRoleForUser(ctx context.Context, Req *auth.RoleBindingReq, callOptions ...callopt.Option) (r *auth.PolicyResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.AddRoleForUser(ctx, Req)
+}
+
+func (p *kAuthServiceClient) RemoveRoleForUser(ctx context.Context, Req *auth.RoleBindingReq, callOptions ...callopt.Option) (r *auth.PolicyResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.RemoveRoleForUser(ctx, Req)
+}
+
+func (p *kAuthServiceClient) GetRolesForUser(ctx context.Context, Req *auth.RoleQueryReq, callOptions ...callopt.Option) (r *auth.RoleQueryResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetRolesForUser(ctx, Req)
 }

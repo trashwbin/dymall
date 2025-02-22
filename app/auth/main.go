@@ -11,6 +11,9 @@ import (
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/trashwbin/dymall/app/auth/biz/dal"
+	"github.com/trashwbin/dymall/app/auth/biz/dal/mysql"
+	"github.com/trashwbin/dymall/app/auth/biz/middleware"
+	"github.com/trashwbin/dymall/app/auth/biz/service"
 	"github.com/trashwbin/dymall/app/auth/conf"
 	"github.com/trashwbin/dymall/rpc_gen/kitex_gen/auth/authservice"
 	"go.uber.org/zap/zapcore"
@@ -22,8 +25,20 @@ func main() {
 	dal.Init()
 	opts := kitexInit()
 
-	svr := authservice.NewServer(new(AuthServiceImpl), opts...)
-	err := svr.Run()
+	// 初始化授权服务
+	authSvc, err := service.NewAuthorizationService(mysql.DB)
+	if err != nil {
+		klog.Fatal(err)
+	}
+
+	// 添加认证中间件
+	opts = append(opts, server.WithMiddleware(middleware.AuthMiddleware(authSvc)))
+
+	// 创建服务实现
+	impl := NewAuthServiceImpl(authSvc)
+
+	svr := authservice.NewServer(impl, opts...)
+	err = svr.Run()
 	if err != nil {
 		klog.Error(err.Error())
 	}
