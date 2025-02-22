@@ -23,7 +23,6 @@ func main() {
 	opts := kitexInit()
 
 	svr := authservice.NewServer(new(AuthServiceImpl), opts...)
-
 	err := svr.Run()
 	if err != nil {
 		klog.Error(err.Error())
@@ -47,7 +46,6 @@ func kitexInit() (opts []server.Option) {
 	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 		ServiceName: conf.GetConf().Kitex.Service,
 	}))
-
 	// klog
 	logger := kitexlogrus.NewLogger()
 	klog.SetLogger(logger)
