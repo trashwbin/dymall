@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	auth "github.com/trashwbin/dymall/rpc_gen/kitex_gen/auth"
+
 	"github.com/trashwbin/dymall/app/auth/biz/service"
+	auth "github.com/trashwbin/dymall/rpc_gen/kitex_gen/auth"
 )
 
 // AuthServiceImpl implements the last service interface defined in the IDL.
