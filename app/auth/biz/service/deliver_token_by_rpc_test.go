@@ -12,11 +12,9 @@ func TestDeliverTokenByRPC_Run(t *testing.T) {
 	ctx := context.Background()
 	authSvc, err := NewMockAuthorizationService()
 	assert.NoError(t, err)
-
 	// 为测试用户添加角色
 	_, err = authSvc.AddRoleForUser(1, "user")
 	assert.NoError(t, err)
-
 	tests := []struct {
 		name     string
 		req      *auth.DeliverTokenReq

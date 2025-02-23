@@ -50,6 +50,7 @@ func (s *DeliverTokenByRPCService) Run(req *auth.DeliverTokenReq) (resp *auth.De
 
 	// 生成JWT令牌
 	token, err := utils.GenerateToken(req.UserId, role)
+
 	if err != nil {
 		klog.Errorf("生成令牌失败: %v", err)
 		resp.Code = auth.ErrorCode_GenerateTokenError
@@ -62,7 +63,6 @@ func (s *DeliverTokenByRPCService) Run(req *auth.DeliverTokenReq) (resp *auth.De
 	resp.Message = "令牌生成成功"
 	resp.Token = token
 	resp.Role = role
-
 	klog.Infof("成功为用户[%d]生成令牌, role=%s", req.UserId, role)
 	return resp, nil
 }

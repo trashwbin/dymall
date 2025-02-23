@@ -121,7 +121,6 @@ func (x *DeliveryResp) fastReadField4(buf []byte, _type int8) (offset int, err e
 	x.Role, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
-
 func (x *VerifyResp) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -759,6 +758,7 @@ func (x *DeliveryResp) sizeField3() (n int) {
 	n += fastpb.SizeString(3, x.GetToken())
 	return n
 }
+
 
 func (x *DeliveryResp) sizeField4() (n int) {
 	if x.Role == "" {
