@@ -121,6 +121,7 @@ func (x *DeliveryResp) fastReadField4(buf []byte, _type int8) (offset int, err e
 	x.Role, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
+
 func (x *VerifyResp) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -145,11 +146,6 @@ func (x *VerifyResp) FastRead(buf []byte, _type int8, number int32) (offset int,
 		}
 	case 5:
 		offset, err = x.fastReadField5(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
-	case 6:
-		offset, err = x.fastReadField6(buf, _type)
 		if err != nil {
 			goto ReadFieldError
 		}
@@ -192,11 +188,6 @@ func (x *VerifyResp) fastReadField4(buf []byte, _type int8) (offset int, err err
 }
 
 func (x *VerifyResp) fastReadField5(buf []byte, _type int8) (offset int, err error) {
-	x.Username, offset, err = fastpb.ReadString(buf, _type)
-	return offset, err
-}
-
-func (x *VerifyResp) fastReadField6(buf []byte, _type int8) (offset int, err error) {
 	x.Role, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
@@ -495,7 +486,6 @@ func (x *VerifyResp) FastWrite(buf []byte) (offset int) {
 	offset += x.fastWriteField3(buf[offset:])
 	offset += x.fastWriteField4(buf[offset:])
 	offset += x.fastWriteField5(buf[offset:])
-	offset += x.fastWriteField6(buf[offset:])
 	return offset
 }
 
@@ -532,18 +522,10 @@ func (x *VerifyResp) fastWriteField4(buf []byte) (offset int) {
 }
 
 func (x *VerifyResp) fastWriteField5(buf []byte) (offset int) {
-	if x.Username == "" {
-		return offset
-	}
-	offset += fastpb.WriteString(buf[offset:], 5, x.GetUsername())
-	return offset
-}
-
-func (x *VerifyResp) fastWriteField6(buf []byte) (offset int) {
 	if x.Role == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 6, x.GetRole())
+	offset += fastpb.WriteString(buf[offset:], 5, x.GetRole())
 	return offset
 }
 
@@ -759,7 +741,6 @@ func (x *DeliveryResp) sizeField3() (n int) {
 	return n
 }
 
-
 func (x *DeliveryResp) sizeField4() (n int) {
 	if x.Role == "" {
 		return n
@@ -777,7 +758,6 @@ func (x *VerifyResp) Size() (n int) {
 	n += x.sizeField3()
 	n += x.sizeField4()
 	n += x.sizeField5()
-	n += x.sizeField6()
 	return n
 }
 
@@ -814,18 +794,10 @@ func (x *VerifyResp) sizeField4() (n int) {
 }
 
 func (x *VerifyResp) sizeField5() (n int) {
-	if x.Username == "" {
-		return n
-	}
-	n += fastpb.SizeString(5, x.GetUsername())
-	return n
-}
-
-func (x *VerifyResp) sizeField6() (n int) {
 	if x.Role == "" {
 		return n
 	}
-	n += fastpb.SizeString(6, x.GetRole())
+	n += fastpb.SizeString(5, x.GetRole())
 	return n
 }
 
@@ -994,8 +966,7 @@ var fieldIDToName_VerifyResp = map[int32]string{
 	2: "Message",
 	3: "IsValid",
 	4: "UserId",
-	5: "Username",
-	6: "Role",
+	5: "Role",
 }
 
 var fieldIDToName_PolicyReq = map[int32]string{
