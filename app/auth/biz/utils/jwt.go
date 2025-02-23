@@ -18,18 +18,16 @@ var (
 
 // CustomClaims 自定义的JWT声明结构
 type CustomClaims struct {
-	UserID   int64  `json:"user_id"`
-	Username string `json:"username"`
-	Role     string `json:"role"`
+	UserID int64  `json:"user_id"`
+	Role   string `json:"role"`
 	jwt.RegisteredClaims
 }
 
 // GenerateToken 生成JWT令牌
-func GenerateToken(userID int64, username, role string) (string, error) {
+func GenerateToken(userID int64, role string) (string, error) {
 	claims := CustomClaims{
-		UserID:   userID,
-		Username: username,
-		Role:     role,
+		UserID: userID,
+		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)), // 24小时后过期
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
