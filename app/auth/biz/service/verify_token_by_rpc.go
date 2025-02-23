@@ -59,9 +59,8 @@ func (s *VerifyTokenByRPCService) Run(req *auth.VerifyTokenReq) (resp *auth.Veri
 	resp.Message = "令牌验证成功"
 	resp.IsValid = true
 	resp.UserId = claims.UserID
-	resp.Username = claims.Username
 	resp.Role = claims.Role
 
-	klog.Infof("成功验证用户[%s]的令牌, role=%s", claims.Username, claims.Role)
+	klog.Infof("成功验证用户[%d]的令牌, role=%s", claims.UserID, claims.Role)
 	return resp, nil
 }

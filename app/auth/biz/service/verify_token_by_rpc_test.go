@@ -15,7 +15,7 @@ func TestVerifyTokenByRPC_Run(t *testing.T) {
 	assert.NoError(t, err)
 
 	// 生成一个有效的测试令牌
-	validToken, err := utils.GenerateToken(1, "test_user", "user")
+	validToken, err := utils.GenerateToken(1, "user")
 	assert.NoError(t, err)
 
 	tests := []struct {
@@ -67,7 +67,6 @@ func TestVerifyTokenByRPC_Run(t *testing.T) {
 			if tt.req.Token == validToken {
 				assert.True(t, resp.IsValid)
 				assert.Equal(t, int64(1), resp.UserId)
-				assert.Equal(t, "test_user", resp.Username)
 				assert.Equal(t, "user", resp.Role)
 			}
 		})

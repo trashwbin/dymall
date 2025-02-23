@@ -20,7 +20,7 @@ func NewAuthServiceImpl(authSvc *service.AuthorizationService) *AuthServiceImpl 
 
 // DeliverTokenByRPC implements the AuthServiceImpl interface.
 func (s *AuthServiceImpl) DeliverTokenByRPC(ctx context.Context, req *auth.DeliverTokenReq) (resp *auth.DeliveryResp, err error) {
-	klog.Infof("收到令牌分发请求: user_id=%d, username=%s, role=%s", req.UserId, req.Username, req.Role)
+	klog.Infof("收到令牌分发请求: user_id=%d", req.UserId)
 	resp, err = service.NewDeliverTokenByRPCService(ctx, s.authSvc).Run(req)
 	if err != nil {
 		klog.Errorf("令牌分发失败: %v", err)
