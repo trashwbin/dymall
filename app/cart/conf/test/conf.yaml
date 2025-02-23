@@ -1,0 +1,26 @@
+kitex:
+  service: "cart"
+  # 这里有一个小坑，因为我是使用的wsl挂载consul的，所以这里的地址是wsl中使用ifconfig查看的地址，即wsl中consul的地址
+  # 如果是使用虚拟机可以直接 address: ":8888"
+  address: "192.168.1.35:8881"
+  log_level: info
+  log_file_name: "log/kitex.log"
+  log_max_size: 10
+  log_max_age: 3
+  log_max_backups: 50
+
+registry:
+  registry_address:
+    - 127.0.0.1:8500
+  username: ""
+  password: ""
+
+mysql:
+  # 这里需要使用环境变量，window记得手动创建一下这个cart的数据库才能自动迁移,已经弃用
+  dsn: "%s:%s@tcp(%s:3306)/cart?charset=utf8mb4&parseTime=True&loc=Local"
+
+redis:
+  address: "127.0.0.1:6379"
+  username: ""
+  password: ""
+  db: 0

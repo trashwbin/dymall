@@ -32,3 +32,19 @@ gen-cart-client:
 gen-cart-server:
 	@cd app/cart && cwgo server --type RPC --service cart --module github.com/trashwbin/dymall/app/cart --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/cart/cart.proto
 
+.PHONY: gen-product-client
+gen-product-client:
+	@cd rpc_gen && cwgo client  --type RPC --service product --module github.com/trashwbin/dymall/rpc_gen --I ../idl --idl ../idl/product/product.proto
+.PHONY: gen-product-server
+gen-product-server:
+	@cd app/product && cwgo server --type RPC --service product --module github.com/trashwbin/dymall/app/product --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/product/product.proto
+
+.PHONY: gen-auth-client
+gen-auth-client:
+	@cd rpc_gen && cwgo client  --type RPC --service auth --module github.com/trashwbin/dymall/rpc_gen --I ../idl --idl ../idl/auth/auth.proto
+
+.PHONY: gen-auth-server
+gen-auth-server:
+	@cd app/auth && cwgo server --type RPC --service auth --module github.com/trashwbin/dymall/app/auth --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/auth/auth.proto
+
+

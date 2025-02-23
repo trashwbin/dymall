@@ -1,2 +1,4 @@
 /.idea
 /app/*/.env
+
+/rpc_gen
