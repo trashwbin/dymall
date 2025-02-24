@@ -1,6 +1,8 @@
 package mysql
 
 import (
+	"time"
+
 	"github.com/trashwbin/dymall/app/product/biz/model"
 	"gorm.io/gorm"
 )
@@ -123,4 +125,49 @@ func (r *ProductRepo) Transaction(fn func(txRepo *ProductRepo) error) error {
 		txRepo := &ProductRepo{db: tx}
 		return fn(txRepo)
 	})
+}
+
+// CreateCategory 创建分类
+func (r *ProductRepo) CreateCategory(category *model.Category) (*model.Category, error) {
+	categoryDO := &CategoryDO{}
+	categoryDO.FromModel(category)
+	if err := r.db.Create(categoryDO).Error; err != nil {
+		return nil, err
+	}
+	return categoryDO.ToModel(), nil
+}
+
+// GetCategoryByName 根据名称获取分类
+func (r *ProductRepo) GetCategoryByName(name string) (*model.Category, error) {
+	var categoryDO CategoryDO
+	if err := r.db.Where("name = ?", name).First(&categoryDO).Error; err != nil {
+		return nil, err
+	}
+	return categoryDO.ToModel(), nil
+}
+
+// GetOrCreateCategory 获取或创建分类
+func (r *ProductRepo) GetOrCreateCategory(name string) (*model.Category, error) {
+	category, err := r.GetCategoryByName(name)
+	if err == nil {
+		return category, nil
+	}
+
+	// 分类不存在，创建新分类
+	now := time.Now()
+	category = &model.Category{
+		Name:      name,
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+	return r.CreateCategory(category)
+}
+
+// AddProductCategory 添加商品分类关系
+func (r *ProductRepo) AddProductCategory(productID uint32, categoryID uint32) error {
+	return r.db.Create(&ProductCategoryDO{
+		ProductID:  productID,
+		CategoryID: categoryID,
+		CreatedAt:  time.Now(),
+	}).Error
 }

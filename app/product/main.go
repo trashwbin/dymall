@@ -45,13 +45,24 @@ func kitexInit() (opts []server.Option) {
 	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 		ServiceName: conf.GetConf().Kitex.Service,
 	}))
+
 	// 加载consul注册中心
 	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
 	if err != nil {
 		klog.Fatal(err)
 	}
 	opts = append(opts, server.WithRegistry(r))
-	// klog
+
+	// 配置中间件
+	// 1. 管理员接口（需要admin权限）
+	adminMiddlewares := GetAdminMiddlewares()
+	opts = append(opts, server.WithMiddleware(adminMiddlewares[0]))
+
+	// 2. 用户接口（需要登录）
+	userMiddlewares := GetUserMiddlewares()
+	opts = append(opts, server.WithMiddleware(userMiddlewares[0]))
+
+	// klog配置
 	logger := kitexlogrus.NewLogger()
 	klog.SetLogger(logger)
 	klog.SetLevel(conf.LogLevel())
