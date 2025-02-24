@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package scheduler;
+
+option go_package = "scheduler";
+
+// 任务类型
+enum TaskType {
+  TASK_TYPE_UNSPECIFIED = 0;
+  TASK_TYPE_ORDER_EXPIRATION = 1;    // 订单过期（同时处理支付过期）
+}
+
+// 任务状态
+enum TaskStatus {
+  TASK_STATUS_UNSPECIFIED = 0;
+  TASK_STATUS_PENDING = 1;    // 待执行
+  TASK_STATUS_RUNNING = 2;    // 执行中
+  TASK_STATUS_COMPLETED = 3;  // 已完成
+  TASK_STATUS_FAILED = 4;     // 执行失败
+  TASK_STATUS_CANCELLED = 5;  // 已取消
+}
+
+service SchedulerService {
+  // 创建定时任务
+  rpc CreateTask(CreateTaskReq) returns (CreateTaskResp) {}
+  // 取消定时任务
+  rpc CancelTask(CancelTaskReq) returns (CancelTaskResp) {}
+  // 查询任务状态
+  rpc GetTask(GetTaskReq) returns (GetTaskResp) {}
+  // 立即执行任务（用于测试或手动触发）
+  rpc ExecuteTask(ExecuteTaskReq) returns (ExecuteTaskResp) {}
+}
+
+message Task {
+  string task_id = 1;
+  TaskType type = 2;
+  TaskStatus status = 3;
+  string target_id = 4;       // 订单ID或支付单ID
+  int64 execute_at = 5;       // 执行时间
+  int64 created_at = 6;
+  int64 updated_at = 7;
+  string error_message = 8;   // 执行失败原因
+  map<string, string> metadata = 9;  // 额外元数据
+}
+
+message CreateTaskReq {
+  TaskType type = 1;
+  string target_id = 2;
+  int64 execute_at = 3;
+  map<string, string> metadata = 4;
+}
+
+message CreateTaskResp {
+  Task task = 1;
+}
+
+message CancelTaskReq {
+  string task_id = 1;
+}
+
+message CancelTaskResp {}
+
+message GetTaskReq {
+  string task_id = 1;
+}
+
+message GetTaskResp {
+  Task task = 1;
+}
+
+message ExecuteTaskReq {
+  string task_id = 1;
+}
+
+message ExecuteTaskResp {
+  Task task = 1;
+} 

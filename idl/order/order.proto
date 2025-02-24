@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+package order;
+
+import "idl/cart/cart.proto";
+
+option go_package = "order";
+
+// 订单状态
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  ORDER_STATUS_PENDING = 1;      // 待支付
+  ORDER_STATUS_PAID = 2;         // 已支付
+  ORDER_STATUS_CANCELLED = 3;    // 已取消
+  ORDER_STATUS_EXPIRED = 4;      // 已过期
+}
+
+service OrderService {
+  // 创建订单
+  rpc CreateOrder(CreateOrderReq) returns (CreateOrderResp) {}
+  // 修改订单
+  rpc UpdateOrder(UpdateOrderReq) returns (UpdateOrderResp) {}
+  // 取消订单（同时取消关联的支付单）
+  rpc CancelOrder(CancelOrderReq) returns (CancelOrderResp) {}
+  // 获取订单详情
+  rpc GetOrder(GetOrderReq) returns (GetOrderResp) {}
+  // 查询订单列表
+  rpc ListOrder(ListOrderReq) returns (ListOrderResp) {}
+  // 标记订单支付完成
+  rpc MarkOrderPaid(MarkOrderPaidReq) returns (MarkOrderPaidResp) {}
+}
+
+message Address {
+  string street_address = 1;
+  string city = 2;
+  string state = 3;
+  string country = 4;
+  int32 zip_code = 5;
+}
+
+message CreateOrderReq {
+  uint32 user_id = 1;
+  string user_currency = 2;
+  Address address = 3;
+  string email = 4;
+  repeated OrderItem order_items = 5;
+  int64 expire_at = 6;  // 订单过期时间
+}
+
+message OrderItem {
+  cart.CartItem item = 1;
+  float cost = 2;
+}
+
+message CreateOrderResp {
+  Order order = 1;
+}
+
+message UpdateOrderReq {
+  string order_id = 1;
+  uint32 user_id = 2;
+  Address address = 3;  // 只允许修改地址
+}
+
+message UpdateOrderResp {
+  Order order = 1;
+}
+
+message CancelOrderReq {
+  string order_id = 1;
+  uint32 user_id = 2;
+  bool cascade = 3;  // 是否级联取消支付单
+}
+
+message CancelOrderResp {}
+
+message GetOrderReq {
+  string order_id = 1;
+  uint32 user_id = 2;
+}
+
+message GetOrderResp {
+  Order order = 1;
+}
+
+message Order {
+  string order_id = 1;
+  uint32 user_id = 2;
+  string user_currency = 3;
+  Address address = 4;
+  string email = 5;
+  repeated OrderItem order_items = 6;
+  OrderStatus status = 7;
+  float total_amount = 8;
+  int64 created_at = 9;
+  int64 updated_at = 10;
+  int64 expire_at = 11;
+  string payment_id = 12;  // 关联的支付单ID
+}
+
+message ListOrderReq {
+  uint32 user_id = 1;
+}
+
+message ListOrderResp {
+  repeated Order orders = 1;
+}
+
+message MarkOrderPaidReq {
+  uint32 user_id = 1;
+  string order_id = 2;
+}
+
+message MarkOrderPaidResp {}

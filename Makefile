@@ -51,7 +51,15 @@ gen-auth-server:
 gen-product-client:
 	@cd rpc_gen && cwgo client  --type RPC --service product --module github.com/trashwbin/dymall/rpc_gen --I ../idl --idl ../idl/product/product.proto
 
-.PHONY: gen-auth-server
+.PHONY: gen-product-server
 gen-product-server:
 	@cd app/product && cwgo server --type RPC --service product --module github.com/trashwbin/dymall/app/product --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/product/product.proto
+	
+.PHONY: gen-payment-client
+gen-payment-client:
+	@cd rpc_gen && cwgo client  --type RPC --service payment --module github.com/trashwbin/dymall/rpc_gen --I ../idl --idl ../idl/payment/payment.proto
+
+.PHONY: gen-payment-server
+gen-payment-server:
+	@cd app/payment && cwgo server --type RPC --service payment --module github.com/trashwbin/dymall/app/payment --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/payment/payment.proto
 	
