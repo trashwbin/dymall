@@ -15,6 +15,21 @@ func NewProductRepo() *ProductRepo {
 	return &ProductRepo{db: DB}
 }
 
+// fillProductCategories 填充商品分类信息
+func (r *ProductRepo) fillProductCategories(product *model.Product) error {
+	categories, err := r.GetCategories(product.ID)
+	if err != nil {
+		return err
+	}
+
+	categoryNames := make([]string, len(categories))
+	for i, category := range categories {
+		categoryNames[i] = category.Name
+	}
+	product.Categories = categoryNames
+	return nil
+}
+
 // CreateProduct 创建商品
 func (r *ProductRepo) CreateProduct(product *model.Product) (*model.Product, error) {
 	productDO := &ProductDO{}
@@ -22,7 +37,11 @@ func (r *ProductRepo) CreateProduct(product *model.Product) (*model.Product, err
 	if err := r.db.Create(productDO).Error; err != nil {
 		return nil, err
 	}
-	return productDO.ToModel(), nil
+
+	// 获取完整的商品信息（包括分类）
+	result := productDO.ToModel()
+	result.Categories = product.Categories // 保留原始分类信息
+	return result, nil
 }
 
 // UpdateProduct 更新商品
@@ -43,7 +62,11 @@ func (r *ProductRepo) GetProduct(id uint32) (*model.Product, error) {
 	if err := r.db.First(&productDO, id).Error; err != nil {
 		return nil, err
 	}
-	return productDO.ToModel(), nil
+
+	// 获取完整的商品信息（包括分类）
+	result := productDO.ToModel()
+	_ = r.fillProductCategories(result)
+	return result, nil
 }
 
 // ListProducts 获取商品列表
