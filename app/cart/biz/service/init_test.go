@@ -48,6 +48,18 @@ func (m *MockProductClient) SearchProducts(ctx context.Context, req *product.Sea
 	return nil, nil
 }
 
+func (m *MockProductClient) CreateProduct(ctx context.Context, req *product.CreateProductReq, opts ...callopt.Option) (r *product.CreateProductResp, err error) {
+	return nil, nil
+}
+
+func (m *MockProductClient) UpdateProduct(ctx context.Context, req *product.UpdateProductReq, opts ...callopt.Option) (r *product.UpdateProductResp, err error) {
+	return nil, nil
+}
+
+func (m *MockProductClient) DeleteProduct(ctx context.Context, req *product.DeleteProductReq, opts ...callopt.Option) (r *product.DeleteProductResp, err error) {
+	return nil, nil
+}
+
 func TestMain(m *testing.M) {
 	// 替换为mock客户端
 	rpc.ProductClient = &MockProductClient{}
