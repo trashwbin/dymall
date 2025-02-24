@@ -32,7 +32,7 @@ func Init() {
 
 	// 自动迁移
 	if os.Getenv("GO_ENV") != "online" {
-		err = DB.AutoMigrate()
+		err = DB.AutoMigrate(&PaymentDO{})
 		if err != nil {
 			panic(fmt.Errorf("数据库迁移失败: %w", err))
 		}
