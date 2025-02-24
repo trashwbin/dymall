@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package payment;
+
+option go_package = "payment";
+
+// 支付状态
+enum PaymentStatus {
+  PAYMENT_STATUS_UNSPECIFIED = 0;
+  PAYMENT_STATUS_PENDING = 1;    // 待支付
+  PAYMENT_STATUS_SUCCESS = 2;    // 支付成功
+  PAYMENT_STATUS_FAILED = 3;     // 支付失败
+  PAYMENT_STATUS_CANCELLED = 4;  // 已取消
+  PAYMENT_STATUS_EXPIRED = 5;    // 已过期
+}
+
+service PaymentService {
+  // 创建支付单
+  rpc CreatePayment(CreatePaymentReq) returns (CreatePaymentResp) {}
+  // 执行支付
+  rpc ProcessPayment(ProcessPaymentReq) returns (ProcessPaymentResp) {}
+  // 取消支付
+  rpc CancelPayment(CancelPaymentReq) returns (CancelPaymentResp) {}
+  // 查询支付状态
+  rpc GetPayment(GetPaymentReq) returns (GetPaymentResp) {}
+}
+
+message CreditCardInfo {
+  string credit_card_number = 1;
+  int32 credit_card_cvv = 2;
+  int32 credit_card_expiration_year = 3;
+  int32 credit_card_expiration_month = 4;
+}
+
+message CreatePaymentReq {
+  string order_id = 1;
+  uint32 user_id = 2;
+  float amount = 3;
+  string currency = 4;
+  int64 expire_at = 5;  // 支付过期时间
+}
+
+message Payment {
+  string payment_id = 1;
+  string order_id = 2;
+  uint32 user_id = 3;
+  float amount = 4;
+  string currency = 5;
+  PaymentStatus status = 6;
+  int64 created_at = 7;
+  int64 updated_at = 8;
+  int64 expire_at = 9;
+  int64 paid_at = 10;    // 支付完成时间
+}
+
+message CreatePaymentResp {
+  Payment payment = 1;
+}
+
+message ProcessPaymentReq {
+  string payment_id = 1;
+  uint32 user_id = 2;
+  CreditCardInfo credit_card = 3;
+}
+
+message ProcessPaymentResp {
+  Payment payment = 1;
+}
+
+message CancelPaymentReq {
+  string payment_id = 1;
+  uint32 user_id = 2;
+}
+
+message CancelPaymentResp {}
+
+message GetPaymentReq {
+  string payment_id = 1;
+  uint32 user_id = 2;
+}
+
+message GetPaymentResp {
+  Payment payment = 1;
+}
