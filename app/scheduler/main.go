@@ -9,12 +9,16 @@ import (
 	"github.com/cloudwego/kitex/server"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	"github.com/trashwbin/dymall/app/scheduler/conf"
+	"github.com/trashwbin/dymall/app/scheduler/infra/rpc"
 	"github.com/trashwbin/dymall/rpc_gen/kitex_gen/scheduler/schedulerservice"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func main() {
+	// 初始化客户端
+	rpc.InitClient()
+
 	opts := kitexInit()
 
 	svr := schedulerservice.NewServer(new(SchedulerServiceImpl), opts...)
