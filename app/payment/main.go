@@ -13,6 +13,7 @@ import (
 	"github.com/trashwbin/dymall/app/payment/biz/dal"
 	"github.com/trashwbin/dymall/app/payment/conf"
 	"github.com/trashwbin/dymall/app/payment/infra/rpc"
+	"github.com/trashwbin/dymall/app/payment/middleware"
 	"github.com/trashwbin/dymall/rpc_gen/kitex_gen/payment/paymentservice"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -23,6 +24,12 @@ func main() {
 	dal.Init()
 	rpc.InitClient()
 	opts := kitexInit()
+
+	// 添加中间件
+	opts = append(opts, server.WithMiddleware(
+		// CreatePayment 只允许 order 服务调用
+		middleware.ServiceAuthMiddleware(middleware.OrderService),
+	))
 
 	svr := paymentservice.NewServer(new(PaymentServiceImpl), opts...)
 
