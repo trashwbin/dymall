@@ -144,3 +144,75 @@ func (r *ProductRepo) GetCategories(ctx context.Context, productID uint32) ([]*m
 	}
 	return categories, nil
 }
+
+// BatchGetProducts 批量获取商品缓存
+func (r *ProductRepo) BatchGetProducts(ctx context.Context, ids []uint32) ([]*model.Product, []uint32, error) {
+	// 构建所有商品的缓存key
+	keys := make([]string, len(ids))
+	idToIndex := make(map[uint32]int)
+	for i, id := range ids {
+		keys[i] = fmt.Sprintf("%s%d", ProductKeyPrefix, id)
+		idToIndex[id] = i
+	}
+
+	// 批量获取缓存
+	results, err := RedisClient.MGet(ctx, keys...).Result()
+	if err != nil {
+		return nil, nil, fmt.Errorf("batch get products from cache failed: %w", err)
+	}
+
+	products := make([]*model.Product, 0, len(ids))
+	missingIDs := make([]uint32, 0)
+
+	// 处理结果
+	for i, result := range results {
+		if result == nil {
+			missingIDs = append(missingIDs, ids[i])
+			continue
+		}
+
+		data, ok := result.(string)
+		if !ok {
+			missingIDs = append(missingIDs, ids[i])
+			continue
+		}
+
+		var cache ProductCache
+		if err := json.Unmarshal([]byte(data), &cache); err != nil {
+			missingIDs = append(missingIDs, ids[i])
+			continue
+		}
+
+		products = append(products, cache.ToModel())
+	}
+
+	return products, missingIDs, nil
+}
+
+// BatchSetProducts 批量设置商品缓存
+func (r *ProductRepo) BatchSetProducts(ctx context.Context, products []*model.Product) error {
+	if len(products) == 0 {
+		return nil
+	}
+
+	// 使用管道批量设置缓存
+	pipe := RedisClient.Pipeline()
+	for _, product := range products {
+		cache := &ProductCache{}
+		cache.FromModel(product)
+
+		data, err := json.Marshal(cache)
+		if err != nil {
+			return fmt.Errorf("marshal product cache failed: %w", err)
+		}
+
+		pipe.Set(ctx, cache.GetKey(), data, ProductExpiration)
+	}
+
+	_, err := pipe.Exec(ctx)
+	if err != nil {
+		return fmt.Errorf("batch set products to cache failed: %w", err)
+	}
+
+	return nil
+}
