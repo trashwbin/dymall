@@ -8,16 +8,22 @@ import (
 	"github.com/trashwbin/dymall/app/checkout/conf"
 	checkoututils "github.com/trashwbin/dymall/app/checkout/utils"
 	"github.com/trashwbin/dymall/rpc_gen/kitex_gen/auth/authservice"
+	"github.com/trashwbin/dymall/rpc_gen/kitex_gen/cart/cartservice"
+	"github.com/trashwbin/dymall/rpc_gen/kitex_gen/product/productcatalogservice"
 )
 
 var (
-	AuthClient authservice.Client
-	once       sync.Once
+	AuthClient    authservice.Client
+	CartClient    cartservice.Client
+	ProductClient productcatalogservice.Client
+	once          sync.Once
 )
 
 func InitClient() {
 	once.Do(func() {
 		initAuthClient()
+		initCartClient()
+		initProductClient()
 	})
 }
 
@@ -27,5 +33,23 @@ func initAuthClient() {
 	checkoututils.MustHandleError(err)
 	opts = append(opts, client.WithResolver(r))
 	AuthClient, err = authservice.NewClient("auth", opts...)
+	checkoututils.MustHandleError(err)
+}
+
+func initCartClient() {
+	var opts []client.Option
+	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
+	checkoututils.MustHandleError(err)
+	opts = append(opts, client.WithResolver(r))
+	CartClient, err = cartservice.NewClient("cart", opts...)
+	checkoututils.MustHandleError(err)
+}
+
+func initProductClient() {
+	var opts []client.Option
+	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
+	checkoututils.MustHandleError(err)
+	opts = append(opts, client.WithResolver(r))
+	ProductClient, err = productservice.NewClient("product", opts...)
 	checkoututils.MustHandleError(err)
 }

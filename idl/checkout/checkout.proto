@@ -24,7 +24,6 @@ message Address {
 
 message CreateCheckoutReq {
   uint32 user_id = 1;
-  repeated cart.CartItem cart_items = 2;
 }
 
 message CreateCheckoutResp {
