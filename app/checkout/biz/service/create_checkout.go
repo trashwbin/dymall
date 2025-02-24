@@ -38,41 +38,48 @@ func (s *CreateCheckoutService) Run(req *checkout.CreateCheckoutReq) (resp *chec
 		return nil, utils.NewCheckoutError(utils.ErrCartEmpty)
 	}
 
-	// 3. 获取商品详情并计算总价
-	var totalAmount float32
-	currency := "CNY" // 默认使用人民币
-
+	// 3. 收集所有商品ID
+	productIDs := make([]uint32, 0, len(cartResp.Cart.Items))
+	quantityMap := make(map[uint32]int32)
 	for _, item := range cartResp.Cart.Items {
 		// 3.1 验证商品数量
 		if item.Quantity <= 0 {
 			klog.CtxErrorf(s.ctx, "CreateCheckoutService - invalid quantity: %d", item.Quantity)
 			return nil, utils.NewCheckoutError(utils.ErrInvalidQuantity)
 		}
-
-		// 3.2 获取商品信息
-		productResp, err := rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{
-			ProductId: uint32(item.ProductId),
-		})
-		if err != nil {
-			klog.CtxErrorf(s.ctx, "CreateCheckoutService - GetProduct failed: %v", err)
-			return nil, err
-		}
-
-		// 3.3 验证商品库存
-		if productResp.Product.Stock < item.Quantity {
-			klog.CtxErrorf(s.ctx, "CreateCheckoutService - insufficient stock: want=%d, got=%d",
-				item.Quantity, productResp.Product.Stock)
-			return nil, utils.NewCheckoutError(utils.ErrInsufficientStock)
-		}
-
-		// 3.4 计算商品总价
-		totalAmount += productResp.Product.Price * float32(item.Quantity)
+		productIDs = append(productIDs, uint32(item.ProductId))
+		quantityMap[uint32(item.ProductId)] = item.Quantity
 	}
 
-	// 4. 创建结算单
+	// 4. 批量获取商品信息
+	productsResp, err := rpc.ProductClient.BatchGetProducts(s.ctx, &product.BatchGetProductsReq{
+		Ids: productIDs,
+	})
+	if err != nil {
+		klog.CtxErrorf(s.ctx, "CreateCheckoutService - BatchGetProducts failed: %v", err)
+		return nil, err
+	}
+
+	// 5. 验证是否所有商品都存在
+	if len(productsResp.MissingIds) > 0 {
+		klog.CtxErrorf(s.ctx, "CreateCheckoutService - some products not found: %v", productsResp.MissingIds)
+		return nil, utils.NewCheckoutError(utils.ErrProductNotFound)
+	}
+
+	// 6. 计算总价并验证库存
+	var totalAmount float32
+	currency := "CNY" // 默认使用人民币
+
+	for _, p := range productsResp.Products {
+		quantity := quantityMap[p.Id]
+		// 6.1 计算商品总价
+		totalAmount += p.Price * float32(quantity)
+	}
+
+	// 7. 创建结算单
 	checkoutID := uuid.New().String()
 
-	// 5. 构建响应
+	// 8. 构建响应
 	resp = &checkout.CreateCheckoutResp{
 		CheckoutId:  checkoutID,
 		Items:       cartResp.Cart.Items,
