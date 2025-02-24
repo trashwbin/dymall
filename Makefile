@@ -62,4 +62,11 @@ gen-payment-client:
 .PHONY: gen-payment-server
 gen-payment-server:
 	@cd app/payment && cwgo server --type RPC --service payment --module github.com/trashwbin/dymall/app/payment --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/payment/payment.proto
-	
+
+.PHONY: gen-scheduler-client
+gen-scheduler-client:
+  @cd rpc_gen && cwgo client --type RPC --service scheduler --module github.com/trashwbin/dymall/rpc_gen --idl ../idl/scheduler/scheduler.proto --I ../idl --I ../
+
+.PHONY: gen-scheduler-server
+gen-scheduler-server:
+  @cd app/scheduler && cwgo server --type RPC --service scheduler --module github.com/trashwbin/dymall/app/scheduler --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" --idl ../../idl/scheduler/scheduler.proto --I ../../idl --I ../../
