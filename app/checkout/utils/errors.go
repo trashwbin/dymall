@@ -9,6 +9,9 @@ const (
 	ErrCartEmpty         = 20001 // 购物车为空
 	ErrInvalidQuantity   = 20002 // 无效的商品数量
 	ErrInsufficientStock = 20003 // 商品库存不足
+	ErrProductNotFound   = 20004 // 商品不存在
+	ErrInvalidZipCode    = 20005 // 无效的邮编
+	ErrCheckoutNotFound  = 20006 // 结算单不存在
 )
 
 var (
@@ -17,6 +20,9 @@ var (
 		ErrCartEmpty:         "cart is empty",
 		ErrInvalidQuantity:   "invalid quantity",
 		ErrInsufficientStock: "insufficient stock",
+		ErrProductNotFound:   "product not found",
+		ErrInvalidZipCode:    "invalid zip code",
+		ErrCheckoutNotFound:  "checkout not found",
 	}
 )
 
