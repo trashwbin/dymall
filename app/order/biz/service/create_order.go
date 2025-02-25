@@ -9,7 +9,6 @@ import (
 	"github.com/trashwbin/dymall/app/order/biz/dal/mysql"
 	"github.com/trashwbin/dymall/app/order/biz/dal/redis"
 	"github.com/trashwbin/dymall/app/order/biz/model"
-	"github.com/trashwbin/dymall/app/order/infra/mq"
 	"github.com/trashwbin/dymall/app/order/infra/rpc"
 	"github.com/trashwbin/dymall/app/order/utils"
 	"github.com/trashwbin/dymall/rpc_gen/kitex_gen/cart"
@@ -144,11 +143,11 @@ func (s *CreateOrderService) Run(req *pb.CreateOrderReq) (resp *pb.CreateOrderRe
 	}
 
 	// 8. 发送订单创建事件
-	err = mq.Nc.Publish("order.created", []byte(createdOrder.OrderID))
-	if err != nil {
-		klog.Errorf("publish order created event failed: %v", err)
-		// 这里不需要返回错误，因为订单已经创建成功
-	}
+	// err = mq.Nc.Publish("order.created", []byte(createdOrder.OrderID))
+	// if err != nil {
+	// 	klog.Errorf("publish order created event failed: %v", err)
+	// 	// 这里不需要返回错误，因为订单已经创建成功
+	// }
 
 	// 9. 清空购物车
 	_, err = rpc.CartClient.EmptyCart(s.ctx, &cart.EmptyCartReq{
