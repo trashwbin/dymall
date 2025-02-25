@@ -12,6 +12,7 @@ import (
 	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/trashwbin/dymall/app/order/biz/dal"
 	"github.com/trashwbin/dymall/app/order/conf"
+	"github.com/trashwbin/dymall/app/order/infra/mq"
 	"github.com/trashwbin/dymall/app/order/infra/rpc"
 	"github.com/trashwbin/dymall/rpc_gen/kitex_gen/order/orderservice"
 	"go.uber.org/zap/zapcore"
@@ -22,7 +23,7 @@ func main() {
 	_ = godotenv.Load()
 	dal.Init()
 	rpc.InitClient()
-
+	mq.Init()
 	opts := kitexInit()
 
 	svr := orderservice.NewServer(new(OrderServiceImpl), opts...)
