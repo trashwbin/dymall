@@ -52,7 +52,7 @@ func ServiceAuthMiddleware(allowedServices ...string) endpoint.Middleware {
 	return func(next endpoint.Endpoint) endpoint.Endpoint {
 		return func(ctx context.Context, req, resp interface{}) (err error) {
 			// 1. 获取调用方信息
-			ri := rpcinfo.GetRpcInfo(ctx)
+			ri := rpcinfo.GetRPCInfo(ctx)
 			if ri == nil {
 				return utils.NewBizError(403, "unauthorized")
 			}
