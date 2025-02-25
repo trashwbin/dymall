@@ -18,7 +18,7 @@ type OrderDO struct {
 	PaymentID   string         `gorm:"type:varchar(32);comment:支付单ID"`
 	Email       string         `gorm:"type:varchar(128);not null;comment:用户邮箱"`
 	ExpireAt    time.Time      `gorm:"not null;comment:过期时间"`
-	PaidAt      time.Time      `gorm:"comment:支付时间"`
+	PaidAt      *time.Time     `gorm:"comment:支付时间"`
 	CreatedAt   time.Time      `gorm:"not null;comment:创建时间"`
 	UpdatedAt   time.Time      `gorm:"not null;comment:更新时间"`
 	DeletedAt   gorm.DeletedAt `gorm:"index;comment:删除时间"`

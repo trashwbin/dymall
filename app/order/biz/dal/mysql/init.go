@@ -35,6 +35,7 @@ func Init() {
 		err = DB.AutoMigrate(
 			&OrderDO{},
 			&OrderItemDO{},
+			&AddressDO{},
 		)
 		if err != nil {
 			panic(fmt.Errorf("数据库迁移失败: %w", err))

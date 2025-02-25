@@ -20,11 +20,11 @@ type Order struct {
 	TotalAmount float64 // 总金额
 	Currency    string  // 货币类型
 	Status      OrderStatus
-	PaymentID   string    // 支付单ID
-	Address     *Address  // 收货地址
-	Email       string    // 用户邮箱
-	ExpireAt    time.Time // 过期时间
-	PaidAt      time.Time // 支付时间
+	PaymentID   string     // 支付单ID
+	Address     *Address   // 收货地址
+	Email       string     // 用户邮箱
+	ExpireAt    time.Time  // 过期时间
+	PaidAt      *time.Time // 支付时间
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	OrderItems  []*OrderItem // 订单商品列表

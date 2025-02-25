@@ -27,7 +27,7 @@ type OrderCache struct {
 	PaymentID   string            `json:"payment_id"`
 	Email       string            `json:"email"`
 	ExpireAt    time.Time         `json:"expire_at"`
-	PaidAt      time.Time         `json:"paid_at"`
+	PaidAt      *time.Time        `json:"paid_at"`
 	UpdatedAt   time.Time         `json:"updated_at"`
 	Address     *AddressCache     `json:"address"`
 	OrderItems  []*OrderItemCache `json:"order_items"`
