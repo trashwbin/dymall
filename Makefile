@@ -47,4 +47,11 @@ gen-auth-client:
 gen-auth-server:
 	@cd app/auth && cwgo server --type RPC --service auth --module github.com/trashwbin/dymall/app/auth --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/auth/auth.proto
 
+.PHONY: gen-user-client
+gen-user-client:
+	@cd rpc_gen && cwgo client  --type RPC --service user --module github.com/trashwbin/dymall/rpc_gen --I ../idl --idl ../idl/user/user.proto
+
+.PHONY: gen-user-server
+gen-user-server:
+	@cd app/user && cwgo server --type RPC --service user --module github.com/trashwbin/dymall/app/user --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/user/user.proto
 
