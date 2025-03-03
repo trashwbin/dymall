@@ -2,9 +2,9 @@ package auth
 
 import (
 	"context"
-	auth "github.com/trashwbin/dymall/rpc_gen/kitex_gen/auth"
 	"github.com/cloudwego/kitex/client/callopt"
 	"github.com/cloudwego/kitex/pkg/klog"
+	auth "github.com/trashwbin/dymall/rpc_gen/kitex_gen/auth"
 )
 
 func DeliverTokenByRPC(ctx context.Context, req *auth.DeliverTokenReq, callOptions ...callopt.Option) (resp *auth.DeliveryResp, err error) {
