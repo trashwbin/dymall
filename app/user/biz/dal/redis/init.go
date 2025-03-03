@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"github.com/cloudwego/kitex/tool/internal_pkg/log"
 	"github.com/redis/go-redis/v9"
 	"github.com/trashwbin/dymall/app/user/conf"
 )
@@ -17,6 +18,8 @@ func Init() {
 		Password: conf.GetConf().Redis.Password,
 		DB:       conf.GetConf().Redis.DB,
 	})
+	//TODO记录
+	log.Info("redis 初始化")
 	if err := RedisClient.Ping(context.Background()).Err(); err != nil {
 		panic(err)
 	}

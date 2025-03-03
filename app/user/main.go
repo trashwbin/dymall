@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/joho/godotenv"
 	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/trashwbin/dymall/app/cart/infra/rpc"
@@ -19,11 +20,7 @@ import (
 )
 
 func main() {
-	//_ = godotenv.Load()
-	//err := godotenv.Load("D:\\Code\\Work\\dymall\\app\\user\\.env.example")
-	err := godotenv.Load(".env.example")
-
-	//err := godotenv.Load("./.env")
+	_ = godotenv.Load()
 
 	dal.Init()
 	rpc.InitClient()
@@ -32,7 +29,11 @@ func main() {
 
 	svr := userservice.NewServer(new(UserServiceImpl), opts...)
 
-	err = svr.Run()
+	err := svr.Run()
+	if err != nil {
+		fmt.Printf("Server failed with error: %v\n", err)
+		return
+	}
 	if err != nil {
 		klog.Error(err.Error())
 	}
