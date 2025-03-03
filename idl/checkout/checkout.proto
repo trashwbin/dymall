@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package checkout;
 
+import "idl/payment/payment.proto";
 import "idl/cart/cart.proto";
 
 option go_package = "/checkout";
@@ -23,6 +24,7 @@ message Address {
 
 message CreateCheckoutReq {
   uint32 user_id = 1;
+  repeated cart.CartItem cart_items = 2;
 }
 
 message CreateCheckoutResp {
@@ -39,6 +41,7 @@ message SubmitCheckoutReq {
   string lastname = 4;
   string email = 5;
   Address address = 6;
+  payment.CreditCardInfo credit_card = 7;
 }
 
 message SubmitCheckoutResp {
