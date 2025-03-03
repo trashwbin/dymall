@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package checkout;
+
+import "idl/cart/cart.proto";
+
+option go_package = "/checkout";
+
+service CheckoutService {
+  // 创建结算单（从购物车创建）
+  rpc CreateCheckout(CreateCheckoutReq) returns (CreateCheckoutResp) {}
+  // 提交结算单（创建订单）
+  rpc SubmitCheckout(SubmitCheckoutReq) returns (SubmitCheckoutResp) {}
+}
+
+message Address {
+  string street_address = 1;
+  string city = 2;
+  string state = 3;
+  string country = 4;
+  string zip_code = 5;
+}
+
+message CreateCheckoutReq {
+  uint32 user_id = 1;
+}
+
+message CreateCheckoutResp {
+  string checkout_id = 1;
+  repeated cart.CartItem items = 2;
+  float total_amount = 3;
+  string currency = 4;
+}
+
+message SubmitCheckoutReq {
+  string checkout_id = 1;
+  uint32 user_id = 2;
+  string firstname = 3;
+  string lastname = 4;
+  string email = 5;
+  Address address = 6;
+}
+
+message SubmitCheckoutResp {
+  string order_id = 1;
+  string payment_id = 2;
+  float total_amount = 3;
+  string currency = 4;
+}

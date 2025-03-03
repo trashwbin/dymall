@@ -47,4 +47,35 @@ gen-auth-client:
 gen-auth-server:
 	@cd app/auth && cwgo server --type RPC --service auth --module github.com/trashwbin/dymall/app/auth --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/auth/auth.proto
 
+.PHONY: gen-product-client
+gen-product-client:
+	@cd rpc_gen && cwgo client  --type RPC --service product --module github.com/trashwbin/dymall/rpc_gen --I ../idl --idl ../idl/product/product.proto
 
+.PHONY: gen-product-server
+gen-product-server:
+	@cd app/product && cwgo server --type RPC --service product --module github.com/trashwbin/dymall/app/product --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/product/product.proto
+	
+.PHONY: gen-payment-client
+gen-payment-client:
+	@cd rpc_gen && cwgo client  --type RPC --service payment --module github.com/trashwbin/dymall/rpc_gen --I ../idl --idl ../idl/payment/payment.proto
+
+.PHONY: gen-payment-server
+gen-payment-server:
+	@cd app/payment && cwgo server --type RPC --service payment --module github.com/trashwbin/dymall/app/payment --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/payment/payment.proto
+	
+.PHONY: gen-order-client
+gen-order-client:
+	@cd rpc_gen && cwgo client --type RPC --service order --module github.com/trashwbin/dymall/rpc_gen --idl ../idl/order/order.proto --I ../idl --I ../
+
+.PHONY: gen-order-server
+gen-order-server:
+	@cd app/order && cwgo server --type RPC --service order --module github.com/trashwbin/dymall/app/order --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" --idl ../../idl/order/order.proto --I ../../idl --I ../../
+
+.PHONY: gen-checkout-client
+gen-checkout-client:
+	@cd rpc_gen && cwgo client --type RPC --service checkout --module github.com/trashwbin/dymall/rpc_gen --idl ../idl/checkout/checkout.proto --I ../idl --I ../
+
+.PHONY: gen-checkout-server
+gen-checkout-server:
+	@cd app/checkout && cwgo server --type RPC --service checkout --module github.com/trashwbin/dymall/app/checkout --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" --idl ../../idl/checkout/checkout.proto --I ../../idl --I ../../
+	
