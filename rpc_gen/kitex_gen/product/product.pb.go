@@ -760,6 +760,108 @@ func (x *DeleteProductResp) GetSuccess() bool {
 	return false
 }
 
+type BatchGetProductsReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ids []uint32 `protobuf:"varint,1,rep,packed,name=ids,proto3" json:"ids,omitempty"`
+}
+
+func (x *BatchGetProductsReq) Reset() {
+	*x = BatchGetProductsReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_product_product_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *BatchGetProductsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BatchGetProductsReq) ProtoMessage() {}
+
+func (x *BatchGetProductsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_product_product_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BatchGetProductsReq.ProtoReflect.Descriptor instead.
+func (*BatchGetProductsReq) Descriptor() ([]byte, []int) {
+	return file_product_product_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *BatchGetProductsReq) GetIds() []uint32 {
+	if x != nil {
+		return x.Ids
+	}
+	return nil
+}
+
+type BatchGetProductsResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Products   []*Product `protobuf:"bytes,1,rep,name=products,proto3" json:"products,omitempty"`
+	MissingIds []uint32   `protobuf:"varint,2,rep,packed,name=missing_ids,json=missingIds,proto3" json:"missing_ids,omitempty"` // 未找到的商品ID列表
+}
+
+func (x *BatchGetProductsResp) Reset() {
+	*x = BatchGetProductsResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_product_product_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *BatchGetProductsResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BatchGetProductsResp) ProtoMessage() {}
+
+func (x *BatchGetProductsResp) ProtoReflect() protoreflect.Message {
+	mi := &file_product_product_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BatchGetProductsResp.ProtoReflect.Descriptor instead.
+func (*BatchGetProductsResp) Descriptor() ([]byte, []int) {
+	return file_product_product_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *BatchGetProductsResp) GetProducts() []*Product {
+	if x != nil {
+		return x.Products
+	}
+	return nil
+}
+
+func (x *BatchGetProductsResp) GetMissingIds() []uint32 {
+	if x != nil {
+		return x.MissingIds
+	}
+	return nil
+}
+
 var File_product_product_proto protoreflect.FileDescriptor
 
 var file_product_product_proto_rawDesc = []byte{
@@ -832,7 +934,16 @@ var file_product_product_proto_rawDesc = []byte{
 	0x02, 0x69, 0x64, 0x22, 0x2d, 0x0a, 0x11, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x50, 0x72, 0x6f,
 	0x64, 0x75, 0x63, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63,
 	0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65,
-	0x73, 0x73, 0x32, 0xca, 0x03, 0x0a, 0x15, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x43, 0x61,
+	0x73, 0x73, 0x22, 0x27, 0x0a, 0x13, 0x42, 0x61, 0x74, 0x63, 0x68, 0x47, 0x65, 0x74, 0x50, 0x72,
+	0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52, 0x65, 0x71, 0x12, 0x10, 0x0a, 0x03, 0x69, 0x64, 0x73,
+	0x18, 0x01, 0x20, 0x03, 0x28, 0x0d, 0x52, 0x03, 0x69, 0x64, 0x73, 0x22, 0x65, 0x0a, 0x14, 0x42,
+	0x61, 0x74, 0x63, 0x68, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x12, 0x2c, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x2e,
+	0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
+	0x73, 0x12, 0x1f, 0x0a, 0x0b, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6e, 0x67, 0x5f, 0x69, 0x64, 0x73,
+	0x18, 0x02, 0x20, 0x03, 0x28, 0x0d, 0x52, 0x0a, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6e, 0x67, 0x49,
+	0x64, 0x73, 0x32, 0x9d, 0x04, 0x0a, 0x15, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x43, 0x61,
 	0x74, 0x61, 0x6c, 0x6f, 0x67, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x48, 0x0a, 0x0d,
 	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x12, 0x19, 0x2e,
 	0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x72,
@@ -860,11 +971,17 @@ var file_product_product_proto_rawDesc = []byte{
 	0x75, 0x63, 0x74, 0x73, 0x12, 0x1a, 0x2e, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x2e, 0x53,
 	0x65, 0x61, 0x72, 0x63, 0x68, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52, 0x65, 0x71,
 	0x1a, 0x1b, 0x2e, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63,
-	0x68, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x22, 0x00, 0x42,
-	0x37, 0x5a, 0x35, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x74, 0x72,
-	0x61, 0x73, 0x68, 0x77, 0x62, 0x69, 0x6e, 0x2f, 0x64, 0x79, 0x6d, 0x61, 0x6c, 0x6c, 0x2f, 0x72,
-	0x70, 0x63, 0x5f, 0x67, 0x65, 0x6e, 0x2f, 0x6b, 0x69, 0x74, 0x65, 0x78, 0x5f, 0x67, 0x65, 0x6e,
-	0x2f, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x68, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x22, 0x00, 0x12,
+	0x51, 0x0a, 0x10, 0x42, 0x61, 0x74, 0x63, 0x68, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75,
+	0x63, 0x74, 0x73, 0x12, 0x1c, 0x2e, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x2e, 0x42, 0x61,
+	0x74, 0x63, 0x68, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52, 0x65,
+	0x71, 0x1a, 0x1d, 0x2e, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x2e, 0x42, 0x61, 0x74, 0x63,
+	0x68, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70,
+	0x22, 0x00, 0x42, 0x37, 0x5a, 0x35, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x74, 0x72, 0x61, 0x73, 0x68, 0x77, 0x62, 0x69, 0x6e, 0x2f, 0x64, 0x79, 0x6d, 0x61, 0x6c,
+	0x6c, 0x2f, 0x72, 0x70, 0x63, 0x5f, 0x67, 0x65, 0x6e, 0x2f, 0x6b, 0x69, 0x74, 0x65, 0x78, 0x5f,
+	0x67, 0x65, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -879,21 +996,23 @@ func file_product_product_proto_rawDescGZIP() []byte {
 	return file_product_product_proto_rawDescData
 }
 
-var file_product_product_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_product_product_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_product_product_proto_goTypes = []interface{}{
-	(*ListProductsReq)(nil),    // 0: product.ListProductsReq
-	(*Product)(nil),            // 1: product.Product
-	(*ListProductsResp)(nil),   // 2: product.ListProductsResp
-	(*GetProductReq)(nil),      // 3: product.GetProductReq
-	(*GetProductResp)(nil),     // 4: product.GetProductResp
-	(*SearchProductsReq)(nil),  // 5: product.SearchProductsReq
-	(*SearchProductsResp)(nil), // 6: product.SearchProductsResp
-	(*CreateProductReq)(nil),   // 7: product.CreateProductReq
-	(*CreateProductResp)(nil),  // 8: product.CreateProductResp
-	(*UpdateProductReq)(nil),   // 9: product.UpdateProductReq
-	(*UpdateProductResp)(nil),  // 10: product.UpdateProductResp
-	(*DeleteProductReq)(nil),   // 11: product.DeleteProductReq
-	(*DeleteProductResp)(nil),  // 12: product.DeleteProductResp
+	(*ListProductsReq)(nil),      // 0: product.ListProductsReq
+	(*Product)(nil),              // 1: product.Product
+	(*ListProductsResp)(nil),     // 2: product.ListProductsResp
+	(*GetProductReq)(nil),        // 3: product.GetProductReq
+	(*GetProductResp)(nil),       // 4: product.GetProductResp
+	(*SearchProductsReq)(nil),    // 5: product.SearchProductsReq
+	(*SearchProductsResp)(nil),   // 6: product.SearchProductsResp
+	(*CreateProductReq)(nil),     // 7: product.CreateProductReq
+	(*CreateProductResp)(nil),    // 8: product.CreateProductResp
+	(*UpdateProductReq)(nil),     // 9: product.UpdateProductReq
+	(*UpdateProductResp)(nil),    // 10: product.UpdateProductResp
+	(*DeleteProductReq)(nil),     // 11: product.DeleteProductReq
+	(*DeleteProductResp)(nil),    // 12: product.DeleteProductResp
+	(*BatchGetProductsReq)(nil),  // 13: product.BatchGetProductsReq
+	(*BatchGetProductsResp)(nil), // 14: product.BatchGetProductsResp
 }
 var file_product_product_proto_depIdxs = []int32{
 	1,  // 0: product.ListProductsResp.products:type_name -> product.Product
@@ -901,23 +1020,26 @@ var file_product_product_proto_depIdxs = []int32{
 	1,  // 2: product.SearchProductsResp.results:type_name -> product.Product
 	1,  // 3: product.CreateProductResp.product:type_name -> product.Product
 	1,  // 4: product.UpdateProductResp.product:type_name -> product.Product
-	7,  // 5: product.ProductCatalogService.CreateProduct:input_type -> product.CreateProductReq
-	9,  // 6: product.ProductCatalogService.UpdateProduct:input_type -> product.UpdateProductReq
-	11, // 7: product.ProductCatalogService.DeleteProduct:input_type -> product.DeleteProductReq
-	0,  // 8: product.ProductCatalogService.ListProducts:input_type -> product.ListProductsReq
-	3,  // 9: product.ProductCatalogService.GetProduct:input_type -> product.GetProductReq
-	5,  // 10: product.ProductCatalogService.SearchProducts:input_type -> product.SearchProductsReq
-	8,  // 11: product.ProductCatalogService.CreateProduct:output_type -> product.CreateProductResp
-	10, // 12: product.ProductCatalogService.UpdateProduct:output_type -> product.UpdateProductResp
-	12, // 13: product.ProductCatalogService.DeleteProduct:output_type -> product.DeleteProductResp
-	2,  // 14: product.ProductCatalogService.ListProducts:output_type -> product.ListProductsResp
-	4,  // 15: product.ProductCatalogService.GetProduct:output_type -> product.GetProductResp
-	6,  // 16: product.ProductCatalogService.SearchProducts:output_type -> product.SearchProductsResp
-	11, // [11:17] is the sub-list for method output_type
-	5,  // [5:11] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	1,  // 5: product.BatchGetProductsResp.products:type_name -> product.Product
+	7,  // 6: product.ProductCatalogService.CreateProduct:input_type -> product.CreateProductReq
+	9,  // 7: product.ProductCatalogService.UpdateProduct:input_type -> product.UpdateProductReq
+	11, // 8: product.ProductCatalogService.DeleteProduct:input_type -> product.DeleteProductReq
+	0,  // 9: product.ProductCatalogService.ListProducts:input_type -> product.ListProductsReq
+	3,  // 10: product.ProductCatalogService.GetProduct:input_type -> product.GetProductReq
+	5,  // 11: product.ProductCatalogService.SearchProducts:input_type -> product.SearchProductsReq
+	13, // 12: product.ProductCatalogService.BatchGetProducts:input_type -> product.BatchGetProductsReq
+	8,  // 13: product.ProductCatalogService.CreateProduct:output_type -> product.CreateProductResp
+	10, // 14: product.ProductCatalogService.UpdateProduct:output_type -> product.UpdateProductResp
+	12, // 15: product.ProductCatalogService.DeleteProduct:output_type -> product.DeleteProductResp
+	2,  // 16: product.ProductCatalogService.ListProducts:output_type -> product.ListProductsResp
+	4,  // 17: product.ProductCatalogService.GetProduct:output_type -> product.GetProductResp
+	6,  // 18: product.ProductCatalogService.SearchProducts:output_type -> product.SearchProductsResp
+	14, // 19: product.ProductCatalogService.BatchGetProducts:output_type -> product.BatchGetProductsResp
+	13, // [13:20] is the sub-list for method output_type
+	6,  // [6:13] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_product_product_proto_init() }
@@ -1082,6 +1204,30 @@ func file_product_product_proto_init() {
 				return nil
 			}
 		}
+		file_product_product_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BatchGetProductsReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_product_product_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BatchGetProductsResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1089,7 +1235,7 @@ func file_product_product_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_product_product_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -1114,4 +1260,5 @@ type ProductCatalogService interface {
 	ListProducts(ctx context.Context, req *ListProductsReq) (res *ListProductsResp, err error)
 	GetProduct(ctx context.Context, req *GetProductReq) (res *GetProductResp, err error)
 	SearchProducts(ctx context.Context, req *SearchProductsReq) (res *SearchProductsResp, err error)
+	BatchGetProducts(ctx context.Context, req *BatchGetProductsReq) (res *BatchGetProductsResp, err error)
 }

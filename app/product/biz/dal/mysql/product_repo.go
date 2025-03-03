@@ -194,3 +194,35 @@ func (r *ProductRepo) AddProductCategory(productID uint32, categoryID uint32) er
 		CreatedAt:  time.Now(),
 	}).Error
 }
+
+// BatchGetProducts 批量获取商品
+func (r *ProductRepo) BatchGetProducts(ids []uint32) ([]*model.Product, []uint32, error) {
+	var productDOs []ProductDO
+	err := r.db.Where("id IN ?", ids).Find(&productDOs).Error
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// 构建已找到的商品ID映射
+	foundIDs := make(map[uint32]bool)
+	for _, product := range productDOs {
+		foundIDs[product.ID] = true
+	}
+
+	// 找出缺失的商品ID
+	missingIDs := make([]uint32, 0)
+	for _, id := range ids {
+		if !foundIDs[id] {
+			missingIDs = append(missingIDs, id)
+		}
+	}
+
+	// 转换为领域模型并填充分类信息
+	products := make([]*model.Product, len(productDOs))
+	for i, productDO := range productDOs {
+		products[i] = productDO.ToModel()
+		_ = r.fillProductCategories(products[i])
+	}
+
+	return products, missingIDs, nil
+}

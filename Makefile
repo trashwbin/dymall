@@ -70,3 +70,18 @@ gen-scheduler-client:
 .PHONY: gen-scheduler-server
 gen-scheduler-server:
   @cd app/scheduler && cwgo server --type RPC --service scheduler --module github.com/trashwbin/dymall/app/scheduler --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" --idl ../../idl/scheduler/scheduler.proto --I ../../idl --I ../../
+.PHONY: gen-order-client
+gen-order-client:
+	@cd rpc_gen && cwgo client --type RPC --service order --module github.com/trashwbin/dymall/rpc_gen --idl ../idl/order/order.proto --I ../idl --I ../
+
+.PHONY: gen-order-server
+gen-order-server:
+	@cd app/order && cwgo server --type RPC --service order --module github.com/trashwbin/dymall/app/order --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" --idl ../../idl/order/order.proto --I ../../idl --I ../../
+
+.PHONY: gen-checkout-client
+gen-checkout-client:
+	@cd rpc_gen && cwgo client --type RPC --service checkout --module github.com/trashwbin/dymall/rpc_gen --idl ../idl/checkout/checkout.proto --I ../idl --I ../
+
+.PHONY: gen-checkout-server
+gen-checkout-server:
+	@cd app/checkout && cwgo server --type RPC --service checkout --module github.com/trashwbin/dymall/app/checkout --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" --idl ../../idl/checkout/checkout.proto --I ../../idl --I ../../
