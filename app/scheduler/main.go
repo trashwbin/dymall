@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"net"
 	"time"
 
@@ -11,6 +12,7 @@ import (
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/trashwbin/dymall/app/scheduler/biz/dal"
+	"github.com/trashwbin/dymall/app/scheduler/biz/service"
 	"github.com/trashwbin/dymall/app/scheduler/conf"
 	"github.com/trashwbin/dymall/app/scheduler/infra/rpc"
 	"github.com/trashwbin/dymall/rpc_gen/kitex_gen/scheduler/schedulerservice"
@@ -23,6 +25,12 @@ func main() {
 	dal.Init()
 	// 初始化客户端
 	rpc.InitClient()
+
+	ctx := context.Background()
+
+	// 启动任务执行器
+	executor := service.NewTaskExecutor()
+	go executor.Start(ctx)
 
 	opts := kitexInit()
 
