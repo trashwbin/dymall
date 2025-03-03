@@ -2,16 +2,25 @@ package utils
 
 import (
 	"context"
+
+	"google.golang.org/grpc/metadata"
 )
 
 const (
 	TokenKey = "token"
 )
 
-// GetTokenFromContext 从上下文中获取令牌
-func GetTokenFromContext(ctx context.Context) string {
-	if token, ok := ctx.Value(TokenKey).(string); ok {
-		return token
+// GetTokenFromMetadata 从metadata中获取token
+func GetTokenFromMetadata(ctx context.Context) string {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return ""
+	}
+
+	// 从metadata中获取token值
+	tokens := md.Get(TokenKey)
+	if len(tokens) > 0 {
+		return tokens[0]
 	}
 	return ""
 }
