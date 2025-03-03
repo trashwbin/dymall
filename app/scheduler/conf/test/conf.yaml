@@ -1,6 +1,6 @@
 kitex:
   service: "scheduler"
-  address: ":8887"
+  address: "192.168.148.120:8887"
   log_level: info
   log_file_name: "log/kitex.log"
   log_max_size: 10
