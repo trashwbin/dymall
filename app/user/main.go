@@ -7,8 +7,8 @@ import (
 
 	"github.com/joho/godotenv"
 	consul "github.com/kitex-contrib/registry-consul"
-	"github.com/trashwbin/dymall/app/cart/infra/rpc"
 	"github.com/trashwbin/dymall/app/user/biz/dal"
+	"github.com/trashwbin/dymall/app/user/infra/rpc"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -24,6 +24,7 @@ func main() {
 	_ = godotenv.Load()
 
 	dal.Init()
+	// 初始化 RPC 客户端
 	rpc.InitClient()
 
 	opts := kitexInit()

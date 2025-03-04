@@ -18,20 +18,39 @@ func NewUserRepo() *UserRepo {
 
 // GetUserByUsername 根据用户名获取用户信息
 func (repo *UserRepo) GetUserByUsername(username string) (*user.User, error) {
-	var u user.User
-	if err := repo.db.Where("username = ?", username).First(&u).Error; err != nil {
+	var userDO UserDO
+	if err := repo.db.Where("username = ?", username).First(&userDO).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil // 用户未找到
 		}
 		return nil, err // 查询失败
 	}
-	return &u, nil
+	// 直接转换为 user.User
+	return &user.User{
+		Id:       int64(userDO.ID),
+		Username: userDO.Username,
+		Password: userDO.Password,
+		Email:    userDO.Email,
+		Gender:   userDO.Gender,
+		Age:      int32(userDO.Age),
+		Address:  userDO.Address,
+	}, nil
 }
 
 // CreateUser 创建新用户
 func (repo *UserRepo) CreateUser(newUser *user.User) error {
-	if err := repo.db.Create(newUser).Error; err != nil {
+	userDO := &UserDO{
+		Username: newUser.Username,
+		Password: newUser.Password,
+		Email:    newUser.Email,
+		Gender:   newUser.Gender,
+		Age:      int(newUser.Age),
+		Address:  newUser.Address,
+	}
+
+	if err := repo.db.Create(userDO).Error; err != nil {
 		return err // 插入失败
 	}
+	newUser.Id = int64(userDO.ID)
 	return nil
 }
