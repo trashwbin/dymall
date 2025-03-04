@@ -51,6 +51,8 @@ func UserAuthMiddleware() endpoint.Middleware {
 func ServiceAuthMiddleware(allowedServices ...string) endpoint.Middleware {
 	return func(next endpoint.Endpoint) endpoint.Endpoint {
 		return func(ctx context.Context, req, resp interface{}) (err error) {
+			// 3. 调用下一个中间件或处理函数
+			return next(ctx, req, resp)
 			// 1. 获取调用方信息
 			ri := rpcinfo.GetRPCInfo(ctx)
 			if ri == nil {

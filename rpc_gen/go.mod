@@ -3,6 +3,7 @@ module github.com/trashwbin/dymall/rpc_gen
 go 1.23.4
 
 replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
+replace github.com/trashwbin/dymall/rpc_gen => ../../rpc_gen
 
 require (
 	github.com/cloudwego/fastpb v0.0.5
@@ -49,5 +50,8 @@ require (
 	google.golang.org/genproto v0.0.0-20210513213006-bf773b8c8384 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+<<<<<<< HEAD
 
 require github.com/golang/protobuf v1.5.4 // indirect
+=======
+>>>>>>> cc9bc9baed9ad5fb1c525f066a92b011a8d154a6

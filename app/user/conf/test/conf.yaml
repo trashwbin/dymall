@@ -1,0 +1,25 @@
+kitex:
+  service: "user"
+  address: ":8888"
+  log_level: info
+  log_file_name: "log/kitex.log"
+  log_max_size: 10
+  log_max_age: 3
+  log_max_backups: 50
+
+registry:
+  registry_address:
+    - 127.0.0.1:2379
+  username: ""
+  password: ""
+
+mysql:
+  # 这里需要使用环境变量，window记得手动创建一下这个cart的数据库才能自动迁移,已经弃用
+  #dsn: "%s:%s@tcp(%s:3306)/user?charset=utf8mb4&parseTime=True&loc=Local"
+  dsn: "root:050125@tcp(127.0.0.1:3306)/user?charset=utf8mb4&parseTime=True&loc=Local"
+
+redis:
+  address: "127.0.0.1:6379"
+  username: ""
+  password: "050125"
+  db: 0

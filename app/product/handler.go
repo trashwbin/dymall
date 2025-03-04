@@ -30,43 +30,58 @@ func GetUserMiddlewares() []endpoint.Middleware {
 
 // CreateProduct implements the ProductCatalogServiceImpl interface.
 func (s *ProductCatalogServiceImpl) CreateProduct(ctx context.Context, req *product.CreateProductReq) (resp *product.CreateProductResp, err error) {
+	// 检查管理员权限
+	if err := middleware.RequireAdmin(ctx); err != nil {
+		return nil, err
+	}
 	resp, err = service.NewCreateProductService(ctx).Run(req)
 	return resp, err
 }
 
 // UpdateProduct implements the ProductCatalogServiceImpl interface.
 func (s *ProductCatalogServiceImpl) UpdateProduct(ctx context.Context, req *product.UpdateProductReq) (resp *product.UpdateProductResp, err error) {
+	// 检查管理员权限
+	if err := middleware.RequireAdmin(ctx); err != nil {
+		return nil, err
+	}
 	resp, err = service.NewUpdateProductService(ctx).Run(req)
 	return resp, err
 }
 
 // DeleteProduct implements the ProductCatalogServiceImpl interface.
 func (s *ProductCatalogServiceImpl) DeleteProduct(ctx context.Context, req *product.DeleteProductReq) (resp *product.DeleteProductResp, err error) {
+	// 检查管理员权限
+	if err := middleware.RequireAdmin(ctx); err != nil {
+		return nil, err
+	}
 	resp, err = service.NewDeleteProductService(ctx).Run(req)
 	return resp, err
 }
 
 // ListProducts implements the ProductCatalogServiceImpl interface.
 func (s *ProductCatalogServiceImpl) ListProducts(ctx context.Context, req *product.ListProductsReq) (resp *product.ListProductsResp, err error) {
+	// 无需权限检查，所有用户都可访问
 	resp, err = service.NewListProductsService(ctx).Run(req)
 	return resp, err
 }
 
 // GetProduct implements the ProductCatalogServiceImpl interface.
 func (s *ProductCatalogServiceImpl) GetProduct(ctx context.Context, req *product.GetProductReq) (resp *product.GetProductResp, err error) {
+	// 无需权限检查，所有用户都可访问
 	resp, err = service.NewGetProductService(ctx).Run(req)
 	return resp, err
 }
 
 // SearchProducts implements the ProductCatalogServiceImpl interface.
 func (s *ProductCatalogServiceImpl) SearchProducts(ctx context.Context, req *product.SearchProductsReq) (resp *product.SearchProductsResp, err error) {
+	// 无需权限检查，所有用户都可访问
 	resp, err = service.NewSearchProductsService(ctx).Run(req)
 	return resp, err
 }
 
 // BatchGetProducts implements the ProductCatalogServiceImpl interface.
 func (s *ProductCatalogServiceImpl) BatchGetProducts(ctx context.Context, req *product.BatchGetProductsReq) (resp *product.BatchGetProductsResp, err error) {
+	// 无需权限检查，所有用户都可访问
 	resp, err = service.NewBatchGetProductsService(ctx).Run(req)
-
 	return resp, err
 }

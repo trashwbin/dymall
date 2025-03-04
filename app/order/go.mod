@@ -17,6 +17,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/trashwbin/dymall/rpc_gen v0.0.0-00010101000000-000000000000
 	go.uber.org/zap v1.27.0
+	google.golang.org/grpc v1.36.1
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/validator.v2 v2.0.1
 	gopkg.in/yaml.v2 v2.4.0

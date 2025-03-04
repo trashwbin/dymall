@@ -28,12 +28,13 @@ func NewDeleteProductService(ctx context.Context) *DeleteProductService {
 // Run 删除商品
 func (s *DeleteProductService) Run(req *product.DeleteProductReq) (resp *product.DeleteProductResp, err error) {
 	resp = new(product.DeleteProductResp)
+	resp.Success = false // 默认设置为失败
 
 	// 1. 检查商品是否存在
 	productModel, err := s.productRepo.GetProduct(req.Id)
 	if err != nil {
 		klog.CtxErrorf(s.ctx, "商品不存在 - productId: %d, err: %v", req.Id, err)
-		return nil, utils.NewBizError(40004, "商品不存在")
+		return resp, utils.NewBizError(40004, "商品不存在")
 	}
 
 	// 2. 使用事务删除商品
@@ -61,7 +62,7 @@ func (s *DeleteProductService) Run(req *product.DeleteProductReq) (resp *product
 	})
 
 	if err != nil {
-		return nil, err
+		return resp, err
 	}
 
 	// 3. 删除商品缓存

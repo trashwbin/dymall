@@ -19,7 +19,7 @@ func TestGetProduct_Run(t *testing.T) {
 		{
 			name: "正常获取商品",
 			req: &product.GetProductReq{
-				Id: 1,
+				Id: 36,
 			},
 			wantErr: false,
 		},

@@ -1,5 +1,5 @@
 kitex:
-  service: "cart"
+  service: "product"
   # 这里有一个小坑，因为我是使用的wsl挂载consul的，所以这里的地址是wsl中使用ifconfig查看的地址，即wsl中consul的地址
   # 如果是使用虚拟机可以直接 address: ":8888"
   address: "192.168.148.120:8882"

@@ -1,29 +1,114 @@
-syntax="proto3";
+syntax = "proto3";
 
 package user;
 
-option go_package="/user";
+option go_package = "/user";
+
+// 错误码枚举
+enum ErrorCode {
+  Success = 0;           // 成功
+  InvalidRequest = 1;    // 无效请求
+  UserNotFound = 2;      // 用户未找到
+  InvalidCredentials = 3; // 无效的用户名或密码
+  InternalError = 4;     // 内部错误
+}
+
+// 用户信息结构体
+message User {
+  int64 id = 1;         // 用户ID
+  string username = 2;  // 用户名
+  string password = 3;  // 密码
+  string email = 4;     // 邮箱
+  string gender = 5;    // 性别 (male, female, other)
+  int32 age = 6;        // 年龄
+  string address = 7;   // 家庭地址
+  string created_at = 8; // 创建时间
+  string updated_at = 9; // 更新时间
+}
+
+// 请求和响应消息结构体
+message CreateUserRequest {
+  string username = 1;  // 用户名
+  string password = 2;  // 密码
+  string email = 3;     // 邮箱
+  string gender = 4;    // 性别 (male, female, other)
+  int32 age = 5;        // 年龄
+  string address = 6;   // 家庭地址
+}
+
+message CreateUserResponse {
+  ErrorCode code = 1;   // 错误码
+  string message = 2;   // 错误消息
+  int64 id = 3;         // 新创建的用户ID
+}
+
+message LoginRequest {
+  string username = 1;  // 用户名
+  string password = 2;  // 密码
+}
+
+message LoginResponse {
+  ErrorCode code = 1;   // 错误码
+  string message = 2;   // 错误消息
+  string token = 3;     // 登录后的认证token
+}
+
+message LogoutRequest {
+  int64 user_id = 1;    // 用户ID
+}
+
+message LogoutResponse {
+  ErrorCode code = 1;   // 错误码
+  string message = 2;   // 错误消息
+}
+
+message UpdateUserRequest {
+  int64 id = 1;         // 用户ID
+  string username = 2;  // 用户名
+  string password = 3;  // 密码
+  string email = 4;     // 邮箱
+  string gender = 5;    // 性别 (male, female, other)
+  int32 age = 6;        // 年龄
+  string address = 7;   // 家庭地址
+}
+
+message UpdateUserResponse {
+  ErrorCode code = 1;   // 错误码
+  string message = 2;   // 错误消息
+}
+
+message UserInfoRequest {
+  int64 user_id = 1;    // 用户ID
+}
+
+message UserInfoResponse {
+  ErrorCode code = 1;   // 错误码
+  string message = 2;   // 错误消息
+  User user = 3;        // 用户信息
+}
+
+// 自定义删除用户响应
+message DeleteUserResponse {
+  ErrorCode code = 1;   // 错误码
+  string message = 2;   // 错误消息
+}
 
 service UserService {
-  rpc Register(RegisterReq) returns (RegisterResp) {}
-  rpc Login(LoginReq) returns (LoginResp) {}
-}
+  // 创建用户
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
 
-message RegisterReq {
-  string email = 1;
-  string password = 2;
-  string confirm_password = 3;
-}
+  // 用户登录
+  rpc Login (LoginRequest) returns (LoginResponse);
 
-message RegisterResp {
-  int32 user_id = 1;
-}
+  // 用户登出
+  rpc Logout (LogoutRequest) returns (LogoutResponse);
 
-message LoginReq {
-  string email= 1;
-  string password = 2;
-}
+  // 更新用户信息
+  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
 
-message LoginResp {
-  int32 user_id = 1;
+  // 删除用户
+  rpc DeleteUser (UserInfoRequest) returns (DeleteUserResponse);  // 返回自定义响应
+
+  // 获取用户信息
+  rpc GetUserInfo (UserInfoRequest) returns (UserInfoResponse);
 }
