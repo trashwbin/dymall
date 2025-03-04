@@ -19,7 +19,7 @@ func TestUpdateProduct_Run(t *testing.T) {
 		{
 			name: "正常更新商品",
 			req: &product.UpdateProductReq{
-				Id:          1,
+				Id:          36,
 				Name:        "更新后的商品",
 				Description: "这是更新后的商品描述",
 				Picture:     "http://example.com/updated.jpg",
@@ -40,7 +40,7 @@ func TestUpdateProduct_Run(t *testing.T) {
 		{
 			name: "商品名称为空",
 			req: &product.UpdateProductReq{
-				Id:    1,
+				Id:    36,
 				Price: 99.9,
 			},
 			wantErr: true,
@@ -49,7 +49,7 @@ func TestUpdateProduct_Run(t *testing.T) {
 		{
 			name: "商品价格为负",
 			req: &product.UpdateProductReq{
-				Id:    1,
+				Id:    36,
 				Name:  "测试商品",
 				Price: -1,
 			},

@@ -19,7 +19,7 @@ func TestDeleteProduct_Run(t *testing.T) {
 		{
 			name: "正常删除商品",
 			req: &product.DeleteProductReq{
-				Id: 1,
+				Id: 35,
 			},
 			wantErr: false,
 		},

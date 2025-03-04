@@ -14,6 +14,7 @@ type CheckoutServiceImpl struct{}
 
 // CreateCheckout implements the CheckoutServiceImpl interface.
 func (s *CheckoutServiceImpl) CreateCheckout(ctx context.Context, req *checkout.CreateCheckoutReq) (resp *checkout.CreateCheckoutResp, err error) {
+	resp = &checkout.CreateCheckoutResp{} // 初始化响应对象
 	// 需要用户认证
 	if err := endpoint.Chain(
 		middleware.UserAuthMiddleware(),
@@ -21,13 +22,14 @@ func (s *CheckoutServiceImpl) CreateCheckout(ctx context.Context, req *checkout.
 		var r = req.(*checkout.CreateCheckoutReq)
 		response, err := service.NewCreateCheckoutService(ctx).Run(r)
 		if err == nil && response != nil {
-			resp.(*checkout.CreateCheckoutResp).CheckoutId = response.CheckoutId
-			resp.(*checkout.CreateCheckoutResp).Items = response.Items
-			resp.(*checkout.CreateCheckoutResp).TotalAmount = response.TotalAmount
-			resp.(*checkout.CreateCheckoutResp).Currency = response.Currency
+			result := resp.(*checkout.CreateCheckoutResp)
+			result.CheckoutId = response.CheckoutId
+			result.Items = response.Items
+			result.TotalAmount = response.TotalAmount
+			result.Currency = response.Currency
 		}
 		return err
-	})(ctx, req, &resp); err != nil {
+	})(ctx, req, resp); err != nil {
 		return nil, err
 	}
 	return resp, err
@@ -35,6 +37,7 @@ func (s *CheckoutServiceImpl) CreateCheckout(ctx context.Context, req *checkout.
 
 // SubmitCheckout implements the CheckoutServiceImpl interface.
 func (s *CheckoutServiceImpl) SubmitCheckout(ctx context.Context, req *checkout.SubmitCheckoutReq) (resp *checkout.SubmitCheckoutResp, err error) {
+	resp = &checkout.SubmitCheckoutResp{} // 初始化响应对象
 	// 需要用户认证
 	if err := endpoint.Chain(
 		middleware.UserAuthMiddleware(),
@@ -42,13 +45,14 @@ func (s *CheckoutServiceImpl) SubmitCheckout(ctx context.Context, req *checkout.
 		var r = req.(*checkout.SubmitCheckoutReq)
 		response, err := service.NewSubmitCheckoutService(ctx).Run(r)
 		if err == nil && response != nil {
-			resp.(*checkout.SubmitCheckoutResp).OrderId = response.OrderId
-			resp.(*checkout.SubmitCheckoutResp).PaymentId = response.PaymentId
-			resp.(*checkout.SubmitCheckoutResp).TotalAmount = response.TotalAmount
-			resp.(*checkout.SubmitCheckoutResp).Currency = response.Currency
+			result := resp.(*checkout.SubmitCheckoutResp)
+			result.OrderId = response.OrderId
+			result.PaymentId = response.PaymentId
+			result.TotalAmount = response.TotalAmount
+			result.Currency = response.Currency
 		}
 		return err
-	})(ctx, req, &resp); err != nil {
+	})(ctx, req, resp); err != nil {
 		return nil, err
 	}
 	return resp, err

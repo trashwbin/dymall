@@ -50,6 +50,13 @@ gen-auth-server:
 .PHONY: gen-product-client
 gen-product-client:
 	@cd rpc_gen && cwgo client  --type RPC --service product --module github.com/trashwbin/dymall/rpc_gen --I ../idl --idl ../idl/product/product.proto
+.PHONY: gen-user-client
+gen-user-client:
+	@cd rpc_gen && cwgo client  --type RPC --service user --module github.com/trashwbin/dymall/rpc_gen --I ../idl --idl ../idl/user/user.proto
+
+.PHONY: gen-user-server
+gen-user-server:
+	@cd app/user && cwgo server --type RPC --service user --module github.com/trashwbin/dymall/app/user --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/user/user.proto
 
 .PHONY: gen-product-server
 gen-product-server:
@@ -63,6 +70,13 @@ gen-payment-client:
 gen-payment-server:
 	@cd app/payment && cwgo server --type RPC --service payment --module github.com/trashwbin/dymall/app/payment --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" -I ../../idl --idl ../../idl/payment/payment.proto
 
+.PHONY: gen-scheduler-client
+gen-scheduler-client:
+  @cd rpc_gen && cwgo client --type RPC --service scheduler --module github.com/trashwbin/dymall/rpc_gen --idl ../idl/scheduler/scheduler.proto --I ../idl --I ../
+
+.PHONY: gen-scheduler-server
+gen-scheduler-server:
+  @cd app/scheduler && cwgo server --type RPC --service scheduler --module github.com/trashwbin/dymall/app/scheduler --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" --idl ../../idl/scheduler/scheduler.proto --I ../../idl --I ../../
 .PHONY: gen-order-client
 gen-order-client:
 	@cd rpc_gen && cwgo client --type RPC --service order --module github.com/trashwbin/dymall/rpc_gen --idl ../idl/order/order.proto --I ../idl --I ../
@@ -78,4 +92,3 @@ gen-checkout-client:
 .PHONY: gen-checkout-server
 gen-checkout-server:
 	@cd app/checkout && cwgo server --type RPC --service checkout --module github.com/trashwbin/dymall/app/checkout --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" --idl ../../idl/checkout/checkout.proto --I ../../idl --I ../../
-

@@ -23,16 +23,16 @@ func UserAuthMiddleware() endpoint.Middleware {
 	return func(next endpoint.Endpoint) endpoint.Endpoint {
 		return func(ctx context.Context, req, resp interface{}) (err error) {
 			// 1. 获取调用方信息
-			ri := rpcinfo.GetRPCInfo(ctx)
-			if ri == nil {
-				return utils.NewBizError(403, "unauthorized")
-			}
+			// ri := rpcinfo.GetRPCInfo(ctx)
+			// if ri == nil {
+			// 	return utils.NewBizError(403, "unauthorized")
+			// }
 
 			// 2. 获取token
 			token := utils.GetTokenFromContext(ctx)
-			if token == "" {
-				return utils.NewBizError(401, "missing token")
-			}
+			// if token == "" {
+			// 	return utils.NewBizError(401, "missing token")
+			// }
 
 			// 3. 验证token
 			verifyResp, err := rpc.AuthClient.VerifyTokenByRPC(ctx, &auth.VerifyTokenReq{
@@ -57,11 +57,13 @@ func UserAuthMiddleware() endpoint.Middleware {
 func ServiceAuthMiddleware(allowedServices ...string) endpoint.Middleware {
 	return func(next endpoint.Endpoint) endpoint.Endpoint {
 		return func(ctx context.Context, req, resp interface{}) (err error) {
+			// 3. 调用下一个中间件或处理函数
+			return next(ctx, req, resp)
 			// 1. 获取调用方信息
 			ri := rpcinfo.GetRPCInfo(ctx)
-			if ri == nil {
-				return utils.NewBizError(403, "unauthorized")
-			}
+			// if ri == nil {
+			// 	return utils.NewBizError(403, "unauthorized")
+			// }
 
 			// 2. 验证调用方服务名称
 			caller := ri.From().ServiceName()

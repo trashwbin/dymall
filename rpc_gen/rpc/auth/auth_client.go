@@ -4,9 +4,9 @@ import (
 	"context"
 	auth "github.com/trashwbin/dymall/rpc_gen/kitex_gen/auth"
 
-	"github.com/trashwbin/dymall/rpc_gen/kitex_gen/auth/authservice"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/client/callopt"
+	
 )
 
 type RPCClient interface {
