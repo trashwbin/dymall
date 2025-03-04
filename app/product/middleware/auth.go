@@ -24,14 +24,14 @@ func RequireUser(ctx context.Context) error {
 func verifyAuth(ctx context.Context, required bool, requireAdmin bool) error {
 	// 从上下文获取token
 	token := utils.GetTokenFromContext(ctx)
-	if token == "" {
-		if required {
-			klog.CtxErrorf(ctx, "未提供认证token")
-			return utils.NewBizError(40100, "请先登录")
-		}
-		// 不需要认证，直接放行
-		return nil
-	}
+	// if token == "" {
+	// 	if required {
+	// 		klog.CtxErrorf(ctx, "未提供认证token")
+	// 		return utils.NewBizError(40100, "请先登录")
+	// 	}
+	// 	// 不需要认证，直接放行
+	// 	return nil
+	// }
 
 	// 验证token
 	verifyResp, err := rpc.AuthClient.VerifyTokenByRPC(ctx, &auth.VerifyTokenReq{

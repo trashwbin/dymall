@@ -14,6 +14,7 @@ type OrderServiceImpl struct{}
 
 // CreateOrder implements the OrderServiceImpl interface.
 func (s *OrderServiceImpl) CreateOrder(ctx context.Context, req *order.CreateOrderReq) (resp *order.CreateOrderResp, err error) {
+	resp = &order.CreateOrderResp{} // 初始化响应对象
 	// 只允许 checkout 服务调用
 	if err := endpoint.Chain(
 		middleware.ServiceAuthMiddleware(middleware.CheckoutService),
@@ -21,10 +22,11 @@ func (s *OrderServiceImpl) CreateOrder(ctx context.Context, req *order.CreateOrd
 		var r = req.(*order.CreateOrderReq)
 		response, err := service.NewCreateOrderService(ctx).Run(r)
 		if err == nil && response != nil {
-			resp.(*order.CreateOrderResp).Order = response.Order
+			result := resp.(*order.CreateOrderResp)
+			result.Order = response.Order
 		}
 		return err
-	})(ctx, req, &resp); err != nil {
+	})(ctx, req, resp); err != nil {
 		return nil, err
 	}
 	return resp, err
