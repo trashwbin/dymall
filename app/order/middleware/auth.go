@@ -24,9 +24,9 @@ func UserAuthMiddleware() endpoint.Middleware {
 		return func(ctx context.Context, req, resp interface{}) (err error) {
 			// 1. 获取token
 			token := utils.GetTokenFromContext(ctx)
-			if token == "" {
-				return utils.NewBizError(401, "missing token")
-			}
+			// if token == "" {
+			// 	return utils.NewBizError(401, "missing token")
+			// }
 
 			// 2. 验证token
 			verifyResp, err := rpc.AuthClient.VerifyTokenByRPC(ctx, &auth.VerifyTokenReq{

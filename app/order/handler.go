@@ -35,6 +35,7 @@ func (s *OrderServiceImpl) CreateOrder(ctx context.Context, req *order.CreateOrd
 // UpdateOrder implements the OrderServiceImpl interface.
 func (s *OrderServiceImpl) UpdateOrder(ctx context.Context, req *order.UpdateOrderReq) (resp *order.UpdateOrderResp, err error) {
 	// 需要用户认证
+	resp = &order.UpdateOrderResp{}
 	if err := endpoint.Chain(
 		middleware.UserAuthMiddleware(),
 	)(func(ctx context.Context, req, resp interface{}) error {
@@ -44,7 +45,7 @@ func (s *OrderServiceImpl) UpdateOrder(ctx context.Context, req *order.UpdateOrd
 			resp.(*order.UpdateOrderResp).Order = response.Order
 		}
 		return err
-	})(ctx, req, &resp); err != nil {
+	})(ctx, req, resp); err != nil {
 		return nil, err
 	}
 	return resp, err
@@ -52,6 +53,7 @@ func (s *OrderServiceImpl) UpdateOrder(ctx context.Context, req *order.UpdateOrd
 
 // CancelOrder implements the OrderServiceImpl interface.
 func (s *OrderServiceImpl) CancelOrder(ctx context.Context, req *order.CancelOrderReq) (resp *order.CancelOrderResp, err error) {
+	resp = &order.CancelOrderResp{} // 初始化响应对象
 	// 需要用户认证
 	if err := endpoint.Chain(
 		middleware.UserAuthMiddleware(),
@@ -62,7 +64,7 @@ func (s *OrderServiceImpl) CancelOrder(ctx context.Context, req *order.CancelOrd
 			// CancelOrderResp 是空结构体，无需赋值
 		}
 		return err
-	})(ctx, req, &resp); err != nil {
+	})(ctx, req, resp); err != nil {
 		return nil, err
 	}
 	return resp, err
@@ -70,6 +72,7 @@ func (s *OrderServiceImpl) CancelOrder(ctx context.Context, req *order.CancelOrd
 
 // GetOrder implements the OrderServiceImpl interface.
 func (s *OrderServiceImpl) GetOrder(ctx context.Context, req *order.GetOrderReq) (resp *order.GetOrderResp, err error) {
+	resp = &order.GetOrderResp{} // 初始化响应对象
 	// 需要用户认证
 	if err := endpoint.Chain(
 		middleware.UserAuthMiddleware(),
@@ -80,7 +83,7 @@ func (s *OrderServiceImpl) GetOrder(ctx context.Context, req *order.GetOrderReq)
 			resp.(*order.GetOrderResp).Order = response.Order
 		}
 		return err
-	})(ctx, req, &resp); err != nil {
+	})(ctx, req, resp); err != nil {
 		return nil, err
 	}
 	return resp, err
@@ -88,6 +91,7 @@ func (s *OrderServiceImpl) GetOrder(ctx context.Context, req *order.GetOrderReq)
 
 // ListOrder implements the OrderServiceImpl interface.
 func (s *OrderServiceImpl) ListOrder(ctx context.Context, req *order.ListOrderReq) (resp *order.ListOrderResp, err error) {
+	resp = &order.ListOrderResp{} // 初始化响应对象
 	// 需要用户认证
 	if err := endpoint.Chain(
 		middleware.UserAuthMiddleware(),
@@ -98,7 +102,7 @@ func (s *OrderServiceImpl) ListOrder(ctx context.Context, req *order.ListOrderRe
 			resp.(*order.ListOrderResp).Orders = response.Orders
 		}
 		return err
-	})(ctx, req, &resp); err != nil {
+	})(ctx, req, resp); err != nil {
 		return nil, err
 	}
 	return resp, err
@@ -106,6 +110,7 @@ func (s *OrderServiceImpl) ListOrder(ctx context.Context, req *order.ListOrderRe
 
 // MarkOrderPaid implements the OrderServiceImpl interface.
 func (s *OrderServiceImpl) MarkOrderPaid(ctx context.Context, req *order.MarkOrderPaidReq) (resp *order.MarkOrderPaidResp, err error) {
+	resp = &order.MarkOrderPaidResp{} // 初始化响应对象
 	// 只允许 payment 服务调用
 	if err := endpoint.Chain(
 		middleware.ServiceAuthMiddleware(middleware.PaymentService),
@@ -116,7 +121,7 @@ func (s *OrderServiceImpl) MarkOrderPaid(ctx context.Context, req *order.MarkOrd
 			// MarkOrderPaidResp 是空结构体，无需赋值
 		}
 		return err
-	})(ctx, req, &resp); err != nil {
+	})(ctx, req, resp); err != nil {
 		return nil, err
 	}
 	return resp, err
