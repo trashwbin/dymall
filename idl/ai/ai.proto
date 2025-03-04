@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package ai;
+
+option go_package = "/ai";
+
+// AI 大模型服务接口
+service AiService {
+  // 解析用户的自然语言查询，提取订单相关信息
+  rpc AnalyzeQuery (AnalyzeQueryRequest) returns (AnalyzeQueryResponse);
+}
+
+// 请求 - 用户输入的自然语言
+message AnalyzeQueryRequest {
+  string user_input = 1;  // 用户输入的查询语句
+}
+
+// 响应 - 解析出的订单查询信息
+message AnalyzeQueryResponse {
+  string order_id = 1;    // 解析出的订单 ID（可能为空）
+  string product_name = 2; // 解析出的商品名称（可能为空）
+  string intent = 3;      // 用户意图（如 "查询订单"）
+  bool success = 4;       // 是否解析成功
+  string message = 5;     // 额外信息
+}

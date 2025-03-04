@@ -3,7 +3,12 @@ package service
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/trashwbin/dymall/app/user/biz/dal/mysql" // 引入 mysql 包来操作数据库
+	"github.com/trashwbin/dymall/app/user/biz/dal/redis"
+	"github.com/trashwbin/dymall/app/user/infra/rpc"
+	"github.com/trashwbin/dymall/rpc_gen/kitex_gen/auth"
 	user "github.com/trashwbin/dymall/rpc_gen/kitex_gen/user"
 	"gorm.io/gorm"
 )
@@ -54,11 +59,9 @@ func (s *LoginService) Run(req *user.LoginRequest) (resp *user.LoginResponse, er
 	}
 
 	// 生成JWT Token
-	//token, err := generateJWT(userDO.ID)
-	//TODO 生成token
-	//rpc.AuthClient.DeliverTokenByRPC()
-	token := "1111"
-
+	deliverTokenRPC, err := rpc.AuthClient.DeliverTokenByRPC(s.ctx, &auth.DeliverTokenReq{
+		UserId: int64(userDO.ID),
+	})
 	if err != nil {
 		return &user.LoginResponse{
 			Code:    user.ErrorCode_InternalError,
@@ -66,10 +69,20 @@ func (s *LoginService) Run(req *user.LoginRequest) (resp *user.LoginResponse, er
 		}, err
 	}
 
+	token := deliverTokenRPC.Token
+	//这里使用redis存储token，设置24小时过期
+	err = redis.RedisClient.Set(s.ctx, token, userDO.ID, 24*time.Hour).Err()
+	if err != nil {
+		return &user.LoginResponse{
+			Code:    user.ErrorCode_InternalError,
+			Message: "存储Token失败",
+		}, err
+	}
+
 	// 返回登录成功信息
 	return &user.LoginResponse{
 		Code:    user.ErrorCode_Success,
 		Message: "登录成功",
-		Token:   token,
+		Token:   string(token),
 	}, nil
 }

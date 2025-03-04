@@ -50,8 +50,3 @@ require (
 	google.golang.org/genproto v0.0.0-20210513213006-bf773b8c8384 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-<<<<<<< HEAD
-
-require github.com/golang/protobuf v1.5.4 // indirect
-=======
->>>>>>> cc9bc9baed9ad5fb1c525f066a92b011a8d154a6
