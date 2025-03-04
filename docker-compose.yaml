@@ -1,14 +1,14 @@
-version: '3'
+#version: '3'
 services:
   #我的mysql是在本地的，所以我这里注释掉,注意这个项目是每个服务都需要一个DATABASE，所以需要初始化数据库
-#  mysql:
-#    image: 'mysql:8.0.32'
-#    ports:
-#      - 3306:3306
-#    environment:
-#      - MYSQL_ROOT_PASSWORD=root
-#    volumes:
-#      - ./db/sql/ini:/docker-entrypoint-initdb.d
+  mysql:
+    image: 'mysql:8.0.32'
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=050125
+    volumes:
+      - ./db/sql/ini:/docker-entrypoint-initdb.d
   redis:
     image: 'redis:6.2'
     ports:
