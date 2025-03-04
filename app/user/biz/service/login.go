@@ -63,6 +63,7 @@ func (s *LoginService) Run(req *user.LoginRequest) (resp *user.LoginResponse, er
 	//TODO测试
 	redis.RedisClient.Set(s.ctx, token, userDO.ID, 0)
 
+
 	if err != nil {
 		return &user.LoginResponse{
 			Code:    user.ErrorCode_InternalError,
@@ -75,5 +76,6 @@ func (s *LoginService) Run(req *user.LoginRequest) (resp *user.LoginResponse, er
 		Code:    user.ErrorCode_Success,
 		Message: "登录成功",
 		Token:   string(token),
+
 	}, nil
 }

@@ -63,4 +63,5 @@ func Init() {
 
 func GetDB() *gorm.DB {
 	return DB // 返回全局变量
+
 }

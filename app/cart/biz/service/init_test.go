@@ -60,6 +60,10 @@ func (m *MockProductClient) DeleteProduct(ctx context.Context, req *product.Dele
 	return nil, nil
 }
 
+func (m *MockProductClient) BatchGetProducts(ctx context.Context, req *product.BatchGetProductsReq, opts ...callopt.Option) (r *product.BatchGetProductsResp, err error) {
+	return &product.BatchGetProductsResp{}, nil
+}
+
 func TestMain(m *testing.M) {
 	// 替换为mock客户端
 	rpc.ProductClient = &MockProductClient{}

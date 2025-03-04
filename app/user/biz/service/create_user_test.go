@@ -160,4 +160,3 @@ func TestCreateUserService_Run(t *testing.T) {
 			}
 		})
 	}
-}

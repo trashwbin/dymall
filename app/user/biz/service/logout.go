@@ -41,6 +41,7 @@ func (s *LogoutService) Run(req *user.LogoutRequest) (resp *user.LogoutResponse,
 	// 执行登出操作
 	// 对于 Token 登出，通常是将 token 标记为无效，或者从缓存中移除 token
 	// 如果使用的是 session，可以在这里删除与用户 session 相关的所有数据
+
 	// 我们可以将 token从缓存中删除。
 	// 生成 Redis Key
 	redisKey := fmt.Sprintf("user:token:%d", req.UserId)
@@ -53,6 +54,7 @@ func (s *LogoutService) Run(req *user.LogoutRequest) (resp *user.LogoutResponse,
 			Message: "登出失败，无法清除 Token",
 		}, err
 	}
+
 	// 此处假设操作成功
 	return &user.LogoutResponse{
 		Code:    user.ErrorCode_Success,

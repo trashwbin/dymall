@@ -14,6 +14,7 @@ type PaymentServiceImpl struct{}
 
 // CreatePayment implements the PaymentServiceImpl interface.
 func (s *PaymentServiceImpl) CreatePayment(ctx context.Context, req *payment.CreatePaymentReq) (resp *payment.CreatePaymentResp, err error) {
+	resp = &payment.CreatePaymentResp{} // 初始化响应对象
 	// 只允许 order 服务调用
 	if err := endpoint.Chain(
 		middleware.ServiceAuthMiddleware(middleware.OrderService),
@@ -24,7 +25,7 @@ func (s *PaymentServiceImpl) CreatePayment(ctx context.Context, req *payment.Cre
 			resp.(*payment.CreatePaymentResp).Payment = response.Payment
 		}
 		return err
-	})(ctx, req, &resp); err != nil {
+	})(ctx, req, resp); err != nil {
 		return nil, err
 	}
 	return resp, err
@@ -32,6 +33,7 @@ func (s *PaymentServiceImpl) CreatePayment(ctx context.Context, req *payment.Cre
 
 // ProcessPayment implements the PaymentServiceImpl interface.
 func (s *PaymentServiceImpl) ProcessPayment(ctx context.Context, req *payment.ProcessPaymentReq) (resp *payment.ProcessPaymentResp, err error) {
+	resp = &payment.ProcessPaymentResp{} // 初始化响应对象
 	// 需要用户认证
 	if err := endpoint.Chain(
 		middleware.UserAuthMiddleware(),
@@ -42,7 +44,7 @@ func (s *PaymentServiceImpl) ProcessPayment(ctx context.Context, req *payment.Pr
 			resp.(*payment.ProcessPaymentResp).Payment = response.Payment
 		}
 		return err
-	})(ctx, req, &resp); err != nil {
+	})(ctx, req, resp); err != nil {
 		return nil, err
 	}
 	return resp, err
@@ -50,6 +52,7 @@ func (s *PaymentServiceImpl) ProcessPayment(ctx context.Context, req *payment.Pr
 
 // CancelPayment implements the PaymentServiceImpl interface.
 func (s *PaymentServiceImpl) CancelPayment(ctx context.Context, req *payment.CancelPaymentReq) (resp *payment.CancelPaymentResp, err error) {
+	resp = &payment.CancelPaymentResp{} // 初始化响应对象
 	// 允许用户或定时服务调用
 	if err := endpoint.Chain(
 		middleware.ServiceAuthMiddleware(middleware.SchedulerService),
@@ -61,7 +64,7 @@ func (s *PaymentServiceImpl) CancelPayment(ctx context.Context, req *payment.Can
 			// CancelPaymentResp 是空结构体，无需赋值
 		}
 		return err
-	})(ctx, req, &resp); err != nil {
+	})(ctx, req, resp); err != nil {
 		return nil, err
 	}
 	return resp, err
@@ -69,6 +72,7 @@ func (s *PaymentServiceImpl) CancelPayment(ctx context.Context, req *payment.Can
 
 // GetPayment implements the PaymentServiceImpl interface.
 func (s *PaymentServiceImpl) GetPayment(ctx context.Context, req *payment.GetPaymentReq) (resp *payment.GetPaymentResp, err error) {
+	resp = &payment.GetPaymentResp{} // 初始化响应对象
 	// 需要用户认证
 	if err := endpoint.Chain(
 		middleware.UserAuthMiddleware(),
@@ -79,7 +83,7 @@ func (s *PaymentServiceImpl) GetPayment(ctx context.Context, req *payment.GetPay
 			resp.(*payment.GetPaymentResp).Payment = response.Payment
 		}
 		return err
-	})(ctx, req, &resp); err != nil {
+	})(ctx, req, resp); err != nil {
 		return nil, err
 	}
 	return resp, err
