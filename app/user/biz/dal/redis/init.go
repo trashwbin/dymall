@@ -2,25 +2,24 @@ package redis
 
 import (
 	"context"
-	"github.com/cloudwego/kitex/tool/internal_pkg/log"
+	"fmt"
+	"os"
+
 	"github.com/redis/go-redis/v9"
-	"github.com/trashwbin/dymall/app/user/conf"
 )
 
-var (
-	RedisClient *redis.Client
-)
+var RedisClient *redis.Client
 
 func Init() {
 	RedisClient = redis.NewClient(&redis.Options{
-		Addr: conf.GetConf().Redis.Address,
-		//Username: conf.GetConf().Redis.Username,//TODO redis版本可能不一样 后续调整
-		Password: conf.GetConf().Redis.Password,
-		DB:       conf.GetConf().Redis.DB,
+		Addr:     fmt.Sprintf("%s:6379", os.Getenv("REDIS_HOST")),
+		Password: os.Getenv("REDIS_PASSWORD"),
+		DB:       0,
 	})
-	//TODO记录
-	log.Info("redis 初始化")
-	if err := RedisClient.Ping(context.Background()).Err(); err != nil {
-		panic(err)
+
+	// 测试连接
+	_, err := RedisClient.Ping(context.Background()).Result()
+	if err != nil {
+		panic(fmt.Sprintf("Redis连接失败: %v", err))
 	}
 }

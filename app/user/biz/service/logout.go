@@ -3,8 +3,9 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/trashwbin/dymall/app/cart/biz/dal/redis"
+
 	"github.com/trashwbin/dymall/app/user/biz/dal/mysql" // 引入 mysql 包来操作数据库
+	"github.com/trashwbin/dymall/app/user/biz/dal/redis"
 	user "github.com/trashwbin/dymall/rpc_gen/kitex_gen/user"
 )
 
