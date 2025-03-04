@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 
-	"github.com/bytedance/gopkg/cloud/metainfo"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/trashwbin/dymall/app/cart/biz/service"
 	"github.com/trashwbin/dymall/app/cart/infra/rpc"
@@ -46,7 +45,7 @@ func verifyToken(ctx context.Context, token string, requiredRole string) (*auth.
 // AddItem implements the CartServiceImpl interface.
 func (s *CartServiceImpl) AddItem(ctx context.Context, req *cart.AddItemReq) (resp *cart.AddItemResp, err error) {
 	// 验证令牌和权限
-	ctx = metainfo.WithValue(ctx, "token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoidXNlciIsImlzcyI6ImF1dGgtc2VydmljZSIsImV4cCI6MTc0MTExMzE5MywibmJmIjoxNzQxMDI2NzkzLCJpYXQiOjE3NDEwMjY3OTN9.FFX_iZcs-Fcmc5RUtDmD9coUITHuQQGtjvGlj2vgRBA")
+	// ctx = metainfo.WithValue(ctx, "token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoidXNlciIsImlzcyI6ImF1dGgtc2VydmljZSIsImV4cCI6MTc0MTExMzE5MywibmJmIjoxNzQxMDI2NzkzLCJpYXQiOjE3NDEwMjY3OTN9.FFX_iZcs-Fcmc5RUtDmD9coUITHuQQGtjvGlj2vgRBA")
 	token := utils.GetTokenFromContext(ctx)
 	verifyResp, err := verifyToken(ctx, token, RoleUser)
 	if err != nil {
