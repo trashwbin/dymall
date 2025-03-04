@@ -1,12 +1,13 @@
 package main
 
 import (
+	"net"
+	"time"
+
 	"github.com/joho/godotenv"
 	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/trashwbin/dymall/app/cart/infra/rpc"
 	"github.com/trashwbin/dymall/app/user/biz/dal"
-	"net"
-	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -21,7 +22,7 @@ import (
 func main() {
 	//_ = godotenv.Load()
 	//err := godotenv.Load("D:\\Code\\Work\\dymall\\app\\user\\.env.example")
-	err := godotenv.Load(".env.example")
+	err := godotenv.Load()
 
 	//err := godotenv.Load("./.env")
 

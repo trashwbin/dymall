@@ -22,10 +22,9 @@ func Init() {
 	user := os.Getenv("MYSQL_USER")
 	password := os.Getenv("MYSQL_PASSWORD")
 	host := os.Getenv("MYSQL_HOST")
-	database := os.Getenv("MYSQL_DATABASE")
 
 	// 构建DSN
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, database)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/user?charset=utf8mb4&parseTime=True&loc=Local", user, password, host)
 
 	// 初始化GORM连接
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
