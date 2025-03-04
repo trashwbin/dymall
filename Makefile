@@ -79,3 +79,6 @@ gen-checkout-client:
 gen-checkout-server:
 	@cd app/checkout && cwgo server --type RPC --service checkout --module github.com/trashwbin/dymall/app/checkout --pass "-use github.com/trashwbin/dymall/rpc_gen/kitex_gen" --idl ../../idl/checkout/checkout.proto --I ../../idl --I ../../
 	
+.PHONY: gen-scheduler-client
+gen-scheduler-client:
+	@cd rpc_gen && cwgo client --type RPC --service scheduler --module github.com/trashwbin/dymall/rpc_gen --idl ../idl/scheduler/scheduler.proto --I ../idl --I ../
