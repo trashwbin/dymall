@@ -3,7 +3,10 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/trashwbin/dymall/app/cart/biz/dal/redis"
 	"github.com/trashwbin/dymall/app/user/biz/dal/mysql" // 引入 mysql 包来操作数据库
+	"github.com/trashwbin/dymall/app/user/infra/rpc"
+	"github.com/trashwbin/dymall/rpc_gen/kitex_gen/auth"
 	user "github.com/trashwbin/dymall/rpc_gen/kitex_gen/user"
 	"gorm.io/gorm"
 )
@@ -54,10 +57,12 @@ func (s *LoginService) Run(req *user.LoginRequest) (resp *user.LoginResponse, er
 	}
 
 	// 生成JWT Token
-	//token, err := generateJWT(userDO.ID)
-	//TODO 生成token
-	//rpc.AuthClient.DeliverTokenByRPC()
-	token := "1111"
+	deliverTokenRPC, err := rpc.AuthClient.DeliverTokenByRPC(s.ctx, &auth.DeliverTokenReq{})
+	token := deliverTokenRPC.Token
+	//这里使用redis存储token
+	//TODO测试
+	redis.RedisClient.Set(s.ctx, token, userDO.ID, 0)
+
 
 	if err != nil {
 		return &user.LoginResponse{
@@ -70,6 +75,7 @@ func (s *LoginService) Run(req *user.LoginRequest) (resp *user.LoginResponse, er
 	return &user.LoginResponse{
 		Code:    user.ErrorCode_Success,
 		Message: "登录成功",
-		Token:   token,
+		Token:   string(token),
+
 	}, nil
 }

@@ -1,7 +1,7 @@
 kitex:
   service: "auth"
   # 服务异常退出可能是由于wsl地址已改变，需更新
-  address: "192.168.148.120:8880"
+  address: ":8880"
   log_level: info
   log_file_name: "log/kitex.log"
   log_max_size: 10

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net"
 	"time"
 
@@ -20,20 +21,19 @@ import (
 )
 
 func main() {
-	//_ = godotenv.Load()
-	//err := godotenv.Load("D:\\Code\\Work\\dymall\\app\\user\\.env.example")
-	err := godotenv.Load()
-
-	//err := godotenv.Load("./.env")
+	_ = godotenv.Load()
 
 	dal.Init()
 	rpc.InitClient()
 
 	opts := kitexInit()
-
 	svr := userservice.NewServer(new(UserServiceImpl), opts...)
 
-	err = svr.Run()
+	err := svr.Run()
+	if err != nil {
+		fmt.Printf("Server failed with error: %v\n", err)
+		return
+	}
 	if err != nil {
 		klog.Error(err.Error())
 	}

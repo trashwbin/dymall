@@ -32,6 +32,17 @@ func Init() {
 		panic(fmt.Errorf("连接数据库失败: %w", err))
 	}
 
+	//测试是否调用到mysql
+	type Version struct {
+		Version string
+	}
+	var v Version
+	err = DB.Raw("select version() as version").Scan(&v).Error
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("测试——打印mysql版本号", v)
+
 	// 在非生产环境下自动迁移
 	if os.Getenv("GO_ENV") != "online" {
 		err = DB.AutoMigrate(&UserDO{})
@@ -51,7 +62,7 @@ func Init() {
 	sqlDB.SetMaxOpenConns(100) // 最大打开连接数
 }
 
-// GetDB 获取数据库实例
 func GetDB() *gorm.DB {
-	return DB
+	return DB // 返回全局变量
+
 }
